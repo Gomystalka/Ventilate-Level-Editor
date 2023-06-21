@@ -13,36 +13,49 @@ public class PathMeshCreator : MonoBehaviour
     public List<Quad> currentlyDrawnQuads = new List<Quad>(); //Somehow serialize this...
 
     private void OnDrawGizmos()
-    {
+    {   
         if (!placedMaterial || !unplacedMaterial) return;
 
         //GL.PushMatrix();
-        GL.Begin(GL.QUADS);
-        placedMaterial.SetPass(0);
-        GL.Color(quadColor);
+
+
         foreach (Quad quad in currentlyDrawnQuads)
         {
+            GL.Begin(GL.QUADS);
+            placedMaterial.SetPass(0);
+            GL.Color(quadColor);
             quad.GLDraw();
 #if UNITY_EDITOR
             //UnityEditor.Handles.ArrowHandleCap(0)
             Gizmos.color = Color.yellow;
-            Gizmos.DrawSphere(quad.Right, 0.1f);
-            Gizmos.DrawSphere(quad.Left, 0.1f);
-            Gizmos.DrawSphere(quad.Up, 0.1f);
-            Gizmos.DrawSphere(quad.Down, 0.1f);
+            Gizmos.DrawSphere(quad.Right, 0.05f);
+            Gizmos.DrawSphere(quad.Left, 0.05f);
+            Gizmos.DrawSphere(quad.Up, 0.05f);
+            Gizmos.DrawSphere(quad.Down, 0.05f);
+            GL.End();
+
+            Vector3 normal = quad.GetEdgeNormal(Quad.Direction.Right);
+            UnityEditor.Handles.color = Color.red;
+            if (UnityEditor.Handles.Button(quad.Right,
+                Quaternion.LookRotation(normal), 1f, 20f, UnityEditor.Handles.CubeHandleCap))
+            {
+                Debug.Log("Amogus");
+            }
 
             //if(Event.current.type == EventType.Repaint)
             Gizmos.DrawRay(quad.Up, quad.GetEdgeNormal(Quad.Direction.Up));
             Gizmos.DrawRay(quad.Down, quad.GetEdgeNormal(Quad.Direction.Down));
             Gizmos.DrawRay(quad.Left, quad.GetEdgeNormal(Quad.Direction.Left));
             Gizmos.DrawRay(quad.Right, quad.GetEdgeNormal(Quad.Direction.Right));
- 
+
             //Debug.Log(Vector3.SignedAngle(quad.Right, quad.Vertices[0].position, Vector3.forward));
-            
+
             //UnityEditor.Handles.ArrowHandleCap(0, quad.Up, Quaternion.LookRotation(quad.UpperEdgeNormal), 1f, EventType.Repaint);
+
+            if (Event.current.type == EventType.MouseDown)
+                Debug.Log("MouseDOWN!");
 #endif
         }
-        GL.End();
         //GL.PopMatrix();
 
         //GL.PushMatrix();

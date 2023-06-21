@@ -164,6 +164,9 @@ public class AssetImporterWizard : ScriptableWizard
     }
 
     private void OnAssetDataLoaded() {
-        _assetDataListCopy = new List<AssetData>(assetData.assetData);
+        if (assetData.assetData != null && assetData.assetData.Length != 0)
+            _assetDataListCopy = new List<AssetData>(assetData.assetData);
+        else
+            _assetDataListCopy = new List<AssetData>();
     }
 }

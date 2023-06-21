@@ -15,18 +15,20 @@ MonoBehaviour:
   assetData:
   - assetPath: Assets/Scene Prefabs/Wedge.fbx
     assetCategory: General
-  - assetPath: Assets/Scene Prefabs/ShishiroBotanForeverUV.fbx
-    assetCategory: NPCs
   - assetPath: Assets/Scene Prefabs/Something.prefab
     assetCategory: General
+  - assetPath: Assets/Scene Prefabs/ShishiroBotanForeverUV.fbx
+    assetCategory: NPC
   - assetPath: Assets/Scene Prefabs/Penis V.2.fbx
-    assetCategory: NPCs
-  - assetPath: Assets/Scene Prefabs/HimegotoHentai.fbx
-    assetCategory: Weapons
-  - assetPath: Assets/Scene Prefabs/BocchiZaRockModel.fbx
-    assetCategory: Props
-  - assetPath: Assets/Scene Prefabs/HHg.fbx
-    assetCategory: Weapons
-  - assetPath: Assets/Scene Prefabs/asda.fbx
     assetCategory: General
+  - assetPath: Assets/Scene Prefabs/HimegotoHentai.fbx
+    assetCategory: Weapon
+  - assetPath: Assets/Scene Prefabs/HHg.fbx
+    assetCategory: Weapon
+  - assetPath: Assets/Scene Prefabs/BocchiZaRockModel.fbx
+    assetCategory: Prop
+  - assetPath: Assets/Scene Prefabs/AstolfoHentai.fbx
+    assetCategory: Prop
+  - assetPath: Assets/Scene Prefabs/asda.fbx
+    assetCategory: Prop
   _projectOwnerGuidString: d4c07969-209c-44f4-9b73-34c98c60c001
