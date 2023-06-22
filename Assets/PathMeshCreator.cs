@@ -12,8 +12,24 @@ public class PathMeshCreator : MonoBehaviour
 
     public List<Quad> currentlyDrawnQuads = new List<Quad>(); //Somehow serialize this...
 
-    private void OnDrawGizmos()
-    {   
+    private void OnEnable()
+    {
+#if UNITY_EDITOR
+        UnityEditor.SceneView.duringSceneGui -= DrawQuadsSceneGUI;
+        UnityEditor.SceneView.duringSceneGui += DrawQuadsSceneGUI;
+#endif
+    }
+
+    private void OnDisable()
+    {
+#if UNITY_EDITOR
+        UnityEditor.SceneView.duringSceneGui -= DrawQuadsSceneGUI;
+#endif
+    }
+
+    private void DrawQuadsSceneGUI(UnityEditor.SceneView sceneView)
+    {
+#if UNITY_EDITOR
         if (!placedMaterial || !unplacedMaterial) return;
 
         //GL.PushMatrix();
@@ -25,37 +41,69 @@ public class PathMeshCreator : MonoBehaviour
             placedMaterial.SetPass(0);
             GL.Color(quadColor);
             quad.GLDraw();
-#if UNITY_EDITOR
+
             //UnityEditor.Handles.ArrowHandleCap(0)
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawSphere(quad.Right, 0.05f);
-            Gizmos.DrawSphere(quad.Left, 0.05f);
-            Gizmos.DrawSphere(quad.Up, 0.05f);
-            Gizmos.DrawSphere(quad.Down, 0.05f);
+            //Gizmos.color = Color.yellow;
+            //Gizmos.DrawSphere(quad.Right, 0.05f);
+            //Gizmos.DrawSphere(quad.Left, 0.05f);
+            //Gizmos.DrawSphere(quad.Up, 0.05f);
+            //Gizmos.DrawSphere(quad.Down, 0.05f);
             GL.End();
 
-            Vector3 normal = quad.GetEdgeNormal(Quad.Direction.Right);
+            UnityEditor.Handles.color = Color.yellow;
+
+            UnityEditor.Handles.SphereHandleCap(0, quad.Right, Quaternion.identity, 0.1f, EventType.Repaint);
+            UnityEditor.Handles.SphereHandleCap(1, quad.Left, Quaternion.identity, 0.1f, EventType.Repaint);
+            UnityEditor.Handles.SphereHandleCap(2, quad.Up, Quaternion.identity, 0.1f, EventType.Repaint);
+            UnityEditor.Handles.SphereHandleCap(3, quad.Down, Quaternion.identity, 0.1f, EventType.Repaint);
+
             UnityEditor.Handles.color = Color.red;
+            Vector3 normal = quad.GetEdgeNormal(Quad.Direction.Right);
             if (UnityEditor.Handles.Button(quad.Right,
-                Quaternion.LookRotation(normal), 1f, 20f, UnityEditor.Handles.CubeHandleCap))
+                Quaternion.LookRotation(normal), 1f, 1f, UnityEditor.Handles.ArrowHandleCap))
             {
-                Debug.Log("Amogus");
+                //quad.AddQuadVerticesUp();
             }
 
+            normal = quad.GetEdgeNormal(Quad.Direction.Left);
+            if (UnityEditor.Handles.Button(quad.Left,
+                Quaternion.LookRotation(normal), 1f, 1f, UnityEditor.Handles.ArrowHandleCap))
+            {
+            }
+
+            UnityEditor.Handles.color = Color.blue;
+            normal = quad.GetEdgeNormal(Quad.Direction.Up);
+            if (UnityEditor.Handles.Button(quad.Up,
+                Quaternion.LookRotation(normal), 1f, 1f, UnityEditor.Handles.ArrowHandleCap))
+            {
+            }
+
+            normal = quad.GetEdgeNormal(Quad.Direction.Down);
+            if (UnityEditor.Handles.Button(quad.Down,
+                Quaternion.LookRotation(normal), 1f, 1f, UnityEditor.Handles.ArrowHandleCap))
+            {
+            }
+
+
+            //if(CheckDirectionButton())
+
+
+            UnityEditor.Handles.color = Color.cyan;
             //if(Event.current.type == EventType.Repaint)
-            Gizmos.DrawRay(quad.Up, quad.GetEdgeNormal(Quad.Direction.Up));
-            Gizmos.DrawRay(quad.Down, quad.GetEdgeNormal(Quad.Direction.Down));
-            Gizmos.DrawRay(quad.Left, quad.GetEdgeNormal(Quad.Direction.Left));
-            Gizmos.DrawRay(quad.Right, quad.GetEdgeNormal(Quad.Direction.Right));
+            //Gizmos.DrawRay(quad.Up, quad.GetEdgeNormal(Quad.Direction.Up));
+            //Gizmos.DrawRay(quad.Down, quad.GetEdgeNormal(Quad.Direction.Down));
+            //Gizmos.DrawRay(quad.Left, quad.GetEdgeNormal(Quad.Direction.Left));
+            //Gizmos.DrawRay(quad.Right, quad.GetEdgeNormal(Quad.Direction.Right));
+            UnityEditor.Handles.DrawLine(quad.Up, quad.Up + quad.GetEdgeNormal(Quad.Direction.Up));
+            UnityEditor.Handles.DrawLine(quad.Down, quad.Down + quad.GetEdgeNormal(Quad.Direction.Down));
+            UnityEditor.Handles.DrawLine(quad.Left, quad.Left + quad.GetEdgeNormal(Quad.Direction.Left));
+            UnityEditor.Handles.DrawLine(quad.Right, quad.Right + quad.GetEdgeNormal(Quad.Direction.Right));
 
             //Debug.Log(Vector3.SignedAngle(quad.Right, quad.Vertices[0].position, Vector3.forward));
 
             //UnityEditor.Handles.ArrowHandleCap(0, quad.Up, Quaternion.LookRotation(quad.UpperEdgeNormal), 1f, EventType.Repaint);
-
-            if (Event.current.type == EventType.MouseDown)
-                Debug.Log("MouseDOWN!");
-#endif
         }
+#endif
         //GL.PopMatrix();
 
         //GL.PushMatrix();
@@ -173,6 +221,36 @@ public class Quad {
         }
         dir.Set(-dir.z, 0f, dir.x);
         return dir.normalized;
+    }
+
+    public void ConnectQuad(ref Quad quad, Direction connectionSourceDirection)
+    { //Example: If direction is UP, the connected quad will be connected from its bottom vertices to the top.
+        switch (connectionSourceDirection) {
+            case Direction.Up:
+                quad.DestroyVertices(2, 3);
+                quad.Vertices[2] = Vertices[1]; //Connect bottom right to top right
+                quad.Vertices[3] = Vertices[0]; //Connect bottom left to top left
+                break;
+            case Direction.Down:
+                quad.Vertices[1] = Vertices[2]; 
+                quad.Vertices[0] = Vertices[3];
+                break;
+            case Direction.Left:
+                break;
+            case Direction.Right:
+                break;
+        }
+    }
+
+    private void DestroyVertices(params int[] vertexIndices) {
+
+        for (int i = 0; i < vertexIndices.Length; i++)
+        {
+            if (Application.isPlaying)
+                Object.Destroy(Vertices[vertexIndices[i]]);
+            else
+                Object.DestroyImmediate(Vertices[vertexIndices[i]]);
+        }
     }
 
     public enum Direction : byte
