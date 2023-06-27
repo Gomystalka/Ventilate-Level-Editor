@@ -283,6 +283,5 @@ public class LevelEditorAssetWindow : ILevelEditorWindow
     }
 
     public void OnWindowClosed() {
-        Debug.Log("");   
     }
 }

@@ -27,9 +27,7 @@ public class PathMeshEditorWindow : ILevelEditorWindow
         EditorGUI.BeginDisabledGroup(!_pathMeshCreatorSceneReference);
         if (GUILayout.Button("Create Quad (WIP)"))
         {
-            Quad quad = Quad.CreateQuad(_pathMeshCreatorSceneReference.transform.position, 2f, _pathMeshCreatorSceneReference.currentlyDrawnQuads.Count);
-            quad.SetParent(_pathMeshCreatorSceneReference.transform);
-            _pathMeshCreatorSceneReference.currentlyDrawnQuads.Add(quad);
+            _pathMeshCreatorSceneReference.GeneratePresetQuad();
         }
         EditorGUI.BeginDisabledGroup(_pathMeshCreatorSceneReference && _pathMeshCreatorSceneReference.currentlyDrawnQuads.Count == 0);
         if (GUILayout.Button("Clear Quads (WIP)")) {
@@ -63,6 +61,8 @@ public class PathMeshEditorWindow : ILevelEditorWindow
             SetPathMeshCreatorObjectVisibility(true);
         else
             CreateOrFindPathMeshCreatorInScene();
+
+        _pathMeshCreatorSceneReference.ResetWindowState();
     }
 
     public void OnWindowClosed()
