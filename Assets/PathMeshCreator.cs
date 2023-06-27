@@ -39,6 +39,7 @@ public class PathMeshCreator : MonoBehaviour
             Vector3 startPosition = source.Position + (source.GetEdgeNormal(direction) * quadSize);
 
             quad = Quad.CreateQuad(startPosition, quadSize, currentlyDrawnQuads.Count);
+
             quad.SetParent(transform);
             source.ConnectQuad(ref quad, direction);
         }
@@ -81,15 +82,7 @@ public class PathMeshCreator : MonoBehaviour
             quad.GLDraw();
             GL.End();
 
-            UnityEditor.Handles.color = Color.yellow;
-
-            UnityEditor.Handles.SphereHandleCap(0, quad.Right, Quaternion.identity, 0.1f, EventType.Repaint);
-            UnityEditor.Handles.SphereHandleCap(1, quad.Left, Quaternion.identity, 0.1f, EventType.Repaint);
-            UnityEditor.Handles.SphereHandleCap(2, quad.Up, Quaternion.identity, 0.1f, EventType.Repaint);
-            UnityEditor.Handles.SphereHandleCap(3, quad.Down, Quaternion.identity, 0.1f, EventType.Repaint);
-
             UnityEditor.Handles.color = Color.red;
-
             Vector3 normal = Vector3.zero;
             UnityEditor.Handles.color = Color.blue;
             for (Quad.Direction direction = Quad.Direction.Up; direction <= Quad.Direction.Right; ++direction)
@@ -205,9 +198,18 @@ public class PathMeshCreator : MonoBehaviour
 
     private void CheckForConnectableVerticesInSelection(out Vertex vertex1, out Vertex vertex2) {
 #if UNITY_EDITOR
-        if (UnityEditor.Selection.count != 2) { vertex1 = null; vertex2 = null; return; }
-        vertex1 = UnityEditor.Selection.gameObjects[0].GetComponent<Vertex>();
-        vertex2 = UnityEditor.Selection.gameObjects[1].GetComponent<Vertex>();
+        vertex1 = null; 
+        vertex2 = null;
+        if (UnityEditor.Selection.count != 2) return; 
+
+        //This "Should" preserve selection order.
+        if (UnityEditor.Selection.objects[0] is GameObject go)
+            vertex1 = go.GetComponent<Vertex>();
+        if (UnityEditor.Selection.objects[1] is GameObject go2)
+            vertex2 = go2.GetComponent<Vertex>();
+
+        //vertex1 = UnityEditor.Selection.gameObjects[0].GetComponent<Vertex>();
+        //vertex2 = UnityEditor.Selection.gameObjects[1].GetComponent<Vertex>();
 #endif
     }
 
@@ -294,6 +296,14 @@ public class Quad {
         //UnityEditor.EditorGUIUtility.SetIconForObject(vertex3, vertexIcon as Texture2D);
         //UnityEditor.EditorGUIUtility.SetIconForObject(vertex4, vertexIcon as Texture2D);
 #endif
+
+        return newQuad;
+    }
+
+    //Finish this. Needs to create a quad in the specified direction based on the source quad's vertices.
+    public static Quad CreateConnectedQuad(ref Quad sourceQuad, Direction connectionDirection, float quadSizeUnits = 1f, int quadIndex = 0) {
+        Quad newQuad = new Quad();
+        newQuad.QuadIndex = quadIndex;
 
         return newQuad;
     }
