@@ -54,6 +54,34 @@ public class Vertex : MonoBehaviour
         }
     }
 
+    public void Disconnect() {
+        if (Connections.Count == 0) return;
+        foreach (VertexConnection connection in _connections)
+        {
+            GameObject vertex = new GameObject($"Vertex{connection.vertexIndex}:{connection.quad.QuadIndex}");
+            vertex.transform.position = Position;
+
+            Vertex vertexObject = vertex.AddComponent<Vertex>()
+                .Setup(connection.quad, connection.vertexIndex);
+            vertexObject.SetParent(connection.quad.Parent);
+            connection.quad.Vertices[connection.vertexIndex] = vertexObject;
+            //Create new vertices - DONE
+            //Assign new vertices to source quads - DONE
+            //Translate slightly to avoid overlap
+            //Clear connections - DONE
+            //Destroy Vertex - DONE
+        }
+        _connections.Clear();
+        if (Application.isPlaying)
+            Destroy(gameObject);
+        else
+        {
+#if UNITY_EDITOR
+            DestroyImmediate(gameObject);
+#endif
+        }
+    }
+
     public void CreateConnection(Quad connectionSourceQuad, byte connectionSourceVertexIndex) {
         VertexConnection connection = new VertexConnection() { 
             quad = connectionSourceQuad,

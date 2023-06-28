@@ -35,12 +35,10 @@ public class PathMeshCreator : MonoBehaviour
         Quad quad = null;
 
         if (source != null)
-        {
-            Vector3 startPosition = source.Position + (source.GetEdgeNormal(direction) * quadSize);
-
-            quad = Quad.CreateQuad(startPosition, quadSize, currentlyDrawnQuads.Count);
-
+        { 
+            quad = Quad.CreateConnectedQuad(ref source, direction, quadSize, currentlyDrawnQuads.Count);
             quad.SetParent(transform);
+
             source.ConnectQuad(ref quad, direction);
         }
         else
@@ -95,7 +93,7 @@ public class PathMeshCreator : MonoBehaviour
 
                 normal = quad.GetEdgeNormal(direction);
                 if (UnityEditor.Handles.Button(quad.GetEdge(direction),
-                    Quaternion.LookRotation(normal), 1f, 1f, UnityEditor.Handles.ArrowHandleCap)) {
+                    Quaternion.LookRotation(normal), 0.05f, 0.05f, UnityEditor.Handles.DotHandleCap)) {
                     Quad newQuad = GeneratePresetQuad(quad, direction);
                     quad.DirectionLocks[index] = true;
 
@@ -151,6 +149,7 @@ public class PathMeshCreator : MonoBehaviour
                 GUI.Label(contentRect, vertexName, centerLabel);
 
                 DrawConnectVerticesControl(ref contentRect);
+                DrawDisconnectVerticesControl(ref contentRect);
 
                 GUI.DragWindow();
             }, "Path Tools");
@@ -192,6 +191,28 @@ public class PathMeshCreator : MonoBehaviour
         {
             UnityEditor.Selection.activeObject = null;
             vertex1.Merge(vertex2);
+        }
+#endif
+    }
+
+    private void DrawDisconnectVerticesControl(ref Rect contentRect)
+    {
+#if UNITY_EDITOR
+        if (UnityEditor.Selection.count != 1) return;
+
+        if (UnityEditor.Selection.objects[0] is GameObject go)
+        {
+            Vertex v = go.GetComponent<Vertex>();
+            if (v.Connections.Count == 0) return;
+
+            contentRect.y += UnityEditor.EditorGUIUtility.singleLineHeight + 40f;
+            contentRect.height = 20f;
+
+            if (GUI.Button(contentRect, $"Disconnect {v.name}"))
+            {
+                v.Disconnect();
+                UnityEditor.Selection.activeObject = null;
+            }
         }
 #endif
     }
@@ -238,6 +259,8 @@ public class Quad {
     public Vector3 Left => (Vertices[0].Position + Vertices[1].Position) / 2f;
     public Vector3 Right => (Vertices[2].Position + Vertices[3].Position) / 2f;
     public Vector3 Position => Vertices[0].Position;
+
+    public Transform Parent { get; set; }
 
     public bool[] DirectionLocks = new bool[4];
 
@@ -301,14 +324,66 @@ public class Quad {
     }
 
     //Finish this. Needs to create a quad in the specified direction based on the source quad's vertices.
-    public static Quad CreateConnectedQuad(ref Quad sourceQuad, Direction connectionDirection, float quadSizeUnits = 1f, int quadIndex = 0) {
+    public static Quad CreateConnectedQuad(ref Quad sourceQuad, Direction connectionDirection, float quadSizeUnits = 1f, int quadIndex = 0)
+    {
         Quad newQuad = new Quad();
         newQuad.QuadIndex = quadIndex;
+        GameObject vertex0 = new GameObject($"Vertex0:{quadIndex}");
+        GameObject vertex1 = new GameObject($"Vertex1:{quadIndex}");
+        GameObject vertex2 = new GameObject($"Vertex2:{quadIndex}");
+        GameObject vertex3 = new GameObject($"Vertex3:{quadIndex}");
+
+        Vector3 normal = sourceQuad.GetEdgeNormal(connectionDirection) * quadSizeUnits;
+        switch (connectionDirection)
+        {
+            case Direction.Up:
+                //Set up bottom vertices.
+                vertex0.transform.position = sourceQuad.Vertices[1].Position;
+                vertex3.transform.position = sourceQuad.Vertices[2].Position;
+
+                //Translate bottom vertices along edge normal by [quadSizeUnits] units.
+                vertex1.transform.position = vertex0.transform.position + normal;
+                vertex2.transform.position = vertex3.transform.position + normal;
+                break;
+            case Direction.Down:
+                vertex1.transform.position = sourceQuad.Vertices[0].Position;
+                vertex2.transform.position = sourceQuad.Vertices[3].Position;
+
+                vertex0.transform.position = vertex1.transform.position + normal;
+                vertex3.transform.position = vertex2.transform.position + normal;
+                break;
+            case Direction.Left:
+                vertex2.transform.position = sourceQuad.Vertices[1].Position;
+                vertex3.transform.position = sourceQuad.Vertices[0].Position;
+
+                vertex1.transform.position = vertex2.transform.position + normal;
+                vertex0.transform.position = vertex3.transform.position + normal;
+                break;
+            case Direction.Right:
+                vertex1.transform.position = sourceQuad.Vertices[2].Position;
+                vertex0.transform.position = sourceQuad.Vertices[3].Position;
+
+                vertex2.transform.position = vertex1.transform.position + normal;
+                vertex3.transform.position = vertex0.transform.position + normal;
+                break;
+            default:
+                break;
+        }
+
+        newQuad.Vertices[0] = vertex0.AddComponent<Vertex>()
+            .Setup(ownerQuad: newQuad, vertexIndex: 0);
+        newQuad.Vertices[1] = vertex1.AddComponent<Vertex>()
+            .Setup(ownerQuad: newQuad, vertexIndex: 1);
+        newQuad.Vertices[2] = vertex2.AddComponent<Vertex>()
+            .Setup(ownerQuad: newQuad, vertexIndex: 2);
+        newQuad.Vertices[3] = vertex3.AddComponent<Vertex>()
+            .Setup(ownerQuad: newQuad, vertexIndex: 3);
 
         return newQuad;
     }
 
     public void SetParent(Transform parent, bool worldPositionStays = true) {
+        Parent = parent;
         Vertices[0].SetParent(parent, worldPositionStays);
         Vertices[1].SetParent(parent, worldPositionStays);
         Vertices[2].SetParent(parent, worldPositionStays);
