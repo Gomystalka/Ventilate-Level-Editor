@@ -37,6 +37,7 @@ public class PathMeshCreator : MonoBehaviour
         if (source != null)
         { 
             quad = Quad.CreateConnectedQuad(ref source, direction, quadSize, currentlyDrawnQuads.Count);
+            quad.GenerateSelfConnections();
             quad.SetParent(transform);
 
             source.ConnectQuad(ref quad, direction);
@@ -44,6 +45,7 @@ public class PathMeshCreator : MonoBehaviour
         else
         {
             quad = Quad.CreateQuad(transform.position, quadSize, currentlyDrawnQuads.Count);
+            quad.GenerateSelfConnections();
             quad.SetParent(transform);
         }
 
@@ -203,7 +205,7 @@ public class PathMeshCreator : MonoBehaviour
         if (UnityEditor.Selection.objects[0] is GameObject go)
         {
             Vertex v = go.GetComponent<Vertex>();
-            if (v.Connections.Count == 0) return;
+            if (v.Connections.Count <= 1) return;
 
             contentRect.y += UnityEditor.EditorGUIUtility.singleLineHeight + 40f;
             contentRect.height = 20f;
@@ -573,6 +575,11 @@ public class Quad {
     //           |        |
     //           |        |
     //           3--------2
+
+    public void GenerateSelfConnections() {
+        for (byte vertexIndex = 0; vertexIndex < 4; ++vertexIndex)
+            Vertices[vertexIndex].CreateConnection(this, vertexIndex);
+    }
 
     public void DestroyVertices(params int[] vertexIndices) { //Implement ownership check
 

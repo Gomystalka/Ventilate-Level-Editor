@@ -223,7 +223,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &866234179
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -239,7 +239,7 @@ MonoBehaviour:
   quadSize: 2
   placedMaterial: {fileID: 2100000, guid: 5ba4692d7dccb1f45b35fbcca27cd7c9, type: 2}
   unplacedMaterial: {fileID: 2100000, guid: 0d2d38f842b240f4a890566d3f8b4427, type: 2}
-  quadColor: {r: 0.59791887, g: 0.9433962, b: 0.53844786, a: 1}
+  quadColor: {r: 0.23696156, g: 0.6698113, b: 0.5375528, a: 1}
 --- !u!4 &866234180
 Transform:
   m_ObjectHideFlags: 0

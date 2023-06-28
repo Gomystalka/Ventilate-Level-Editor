@@ -11,6 +11,8 @@ public class Vertex : MonoBehaviour
     public List<VertexConnection> Connections => _connections;
 
     public byte VertexIndex { get; private set; } = 0;
+    //Assign unique vertex index
+    public int UniqueVertexIndex { get; set; } = 0;
 
     public Vector3 Position => transform.position;
 
@@ -64,6 +66,7 @@ public class Vertex : MonoBehaviour
             Vertex vertexObject = vertex.AddComponent<Vertex>()
                 .Setup(connection.quad, connection.vertexIndex);
             vertexObject.SetParent(connection.quad.Parent);
+            vertexObject.CreateConnection(connection.quad, connection.vertexIndex); //Create new self connection.
             connection.quad.Vertices[connection.vertexIndex] = vertexObject;
             //Create new vertices - DONE
             //Assign new vertices to source quads - DONE
