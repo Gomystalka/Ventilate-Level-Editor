@@ -22,6 +22,12 @@ public class Vertex : MonoBehaviour
 
         Gizmos.color = Color.green;
         Gizmos.DrawSphere(transform.position, 0.05f);
+
+#if UNITY_EDITOR
+        GUIStyle style = new GUIStyle(UnityEditor.EditorStyles.boldLabel);
+        style.fontSize = 32;
+        UnityEditor.Handles.Label(transform.position + (Vector3.up * 0.25f), UniqueVertexIndex.ToString(), style);
+#endif
     }
 
     public Vertex Setup(Quad ownerQuad, byte vertexIndex)

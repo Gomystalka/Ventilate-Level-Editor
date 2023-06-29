@@ -64,6 +64,7 @@ public class PathMeshCreator : MonoBehaviour
 }
 
     private Rect _editWindowRect;
+    HashSet<Vertex> vertexSet = new HashSet<Vertex>();
 
     private void DrawQuadsSceneGUI(UnityEditor.SceneView sceneView)
     {
@@ -71,10 +72,20 @@ public class PathMeshCreator : MonoBehaviour
         if (!placedMaterial || !unplacedMaterial) return;
 
         //GL.PushMatrix();
+        vertexSet.Clear();
 
         for (int q = 0; q < currentlyDrawnQuads.Count; ++q)
         {
             Quad quad = currentlyDrawnQuads[q];
+
+            for (int v = 0; v < 4; ++v) {
+
+                Vertex vertex = quad.Vertices[v];
+                if (!vertexSet.Contains(vertex)) {
+                    vertex.UniqueVertexIndex = q * 4 + v;
+                    vertexSet.Add(vertex);
+                }
+            }
 
             GL.Begin(GL.QUADS);
             placedMaterial.SetPass(0);
@@ -205,7 +216,7 @@ public class PathMeshCreator : MonoBehaviour
         if (UnityEditor.Selection.objects[0] is GameObject go)
         {
             Vertex v = go.GetComponent<Vertex>();
-            if (v.Connections.Count <= 1) return;
+            if (!v || v.Connections.Count <= 1) return;
 
             contentRect.y += UnityEditor.EditorGUIUtility.singleLineHeight + 40f;
             contentRect.height = 20f;
@@ -253,6 +264,12 @@ public class PathMeshCreator : MonoBehaviour
 }
 
 public class Quad {
+    //TO-DO
+    //-Properly lock directional buttons (NSY)
+    //-Save to mesh
+    //  -Every vertex has unique ID. Connected vertices share IDs. Creating new Vertex will assign a new ID. Vector3 Position to index map?
+    //  -Quads into triangles
+    //  -Draw in order of creation.
     public Vertex[] Vertices { get; private set; } = new Vertex[4];
     //public Quad[] VertexOwners { get; private set; } = new Quad[4];
 
