@@ -35,6 +35,16 @@ public class PathMeshEditorWindow : ILevelEditorWindow
         }
         EditorGUI.EndDisabledGroup();
         EditorGUI.EndDisabledGroup();
+
+        if (_pathMeshCreatorSceneReference.currentlyDrawnQuads.Count > 0) {
+            if (GUILayout.Button("Generate Mesh (MEGA WIP)")) {
+                Mesh m = LevelEditorMeshUtility.GenerateMeshFromQuadData(ref _pathMeshCreatorSceneReference.currentlyDrawnQuads);
+                MeshFilter mf = _pathMeshCreatorSceneReference.gameObject.AddComponent<MeshFilter>();
+                MeshRenderer renderer = _pathMeshCreatorSceneReference.gameObject.AddComponent<MeshRenderer>();
+                mf.sharedMesh = m;
+                renderer.material = _pathMeshCreatorSceneReference.placedMaterial;
+            }
+        }
     }
 
     public void OnDestroy()
