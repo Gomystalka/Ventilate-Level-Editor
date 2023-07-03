@@ -5,6 +5,11 @@ using UnityEngine;
 [ExecuteInEditMode]
 public class PathMeshCreator : MonoBehaviour
 {
+    //TO-DO
+    // -Persistence (After play mode, editor close, etc.)
+    // -Mesh generation
+    //  -Generated mesh controls (Delete, Save to File)
+
     [Header("Settings")]
     public float quadSize = 2f;
     
