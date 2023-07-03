@@ -11,17 +11,30 @@ public static class LevelEditorMeshUtility
         Mesh mesh = new Mesh();
         //HashSet<Vertex> usedVertices = new HashSet<Vertex>();
 
-        for(int q = 0; q < drawnQuads.Count; ++q) {
+        for (int q = 0; q < drawnQuads.Count; ++q) {
+            Quad quad = drawnQuads[q];
+
             for (int v = 0; v < 4; ++v) {
-                Vertex vertex = drawnQuads[q].Vertices[v];
+                Vertex vertex = quad.Vertices[v];
                 if (!vertices.Contains(vertex.Position))
                 {
                     //usedVertices.Add(vertex); //This can probably just be a contains check on the vertices list tbh
                     vertices.Add(vertex.Position);
                     uv.Add(new Vector2(vertex.Position.x, vertex.Position.z));
                 }
-                //triangles.Add(drawnQuads[q].Vertices[v]); //0, 1, 2 | 2, 3, 0
             }
+        }
+        //There's probably a better way to do this but this works perfectly fine.
+        for (int q = 0; q < drawnQuads.Count; ++q) {
+            Quad quad = drawnQuads[q];
+
+            int v0 = vertices.IndexOf(quad.Vertices[0].Position);
+            int v1 = vertices.IndexOf(quad.Vertices[1].Position);
+            int v2 = vertices.IndexOf(quad.Vertices[2].Position);
+            int v3 = vertices.IndexOf(quad.Vertices[3].Position);
+
+            triangles.AddRange(new[] { v0, v1, v2}); //0 1 2
+            triangles.AddRange(new[] { v2, v3, v0}); //2, 3, 0
         }
 
         mesh.vertices = vertices.ToArray();
