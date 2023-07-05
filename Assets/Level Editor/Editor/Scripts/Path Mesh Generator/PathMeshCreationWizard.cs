@@ -54,9 +54,10 @@ public class PathMeshCreationWizard : ScriptableWizard
         filter.sharedMesh = mesh;
 
         if (_saveToFile)
-            LevelEditorMeshUtility.SaveMeshToFile(mesh, false, _meshName);
+            LevelEditorMeshUtility.SaveMeshToFile(mesh, false, ModelImporterMeshCompression.Off, _meshName);
 
         _pathMeshCreator = null;
+        Debug.Log("SS");
     }
 
     private void OnWizardOtherButton()

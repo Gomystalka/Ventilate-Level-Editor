@@ -7,8 +7,8 @@ public class PathMeshCreator : MonoBehaviour
 {
     //TO-DO
     // -Persistence (After play mode, editor close, etc.)
-    // -Mesh generation
-    //  -Generated mesh controls (Delete, Save to File)
+    // -Mesh generation - DONE
+    //  -Generated mesh controls (Save to File) - DONE
 
     [Header("Settings")]
     public float quadSize = 2f;

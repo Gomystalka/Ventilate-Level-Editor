@@ -33,8 +33,16 @@ public static class LevelEditorMeshUtility
             int v2 = vertices.IndexOf(quad.Vertices[2].Position);
             int v3 = vertices.IndexOf(quad.Vertices[3].Position);
 
-            triangles.AddRange(new[] { v0, v1, v2}); //0 1 2
-            triangles.AddRange(new[] { v2, v3, v0}); //2, 3, 0
+            //Why in the flying FUCK am I creating 2 arrays PER iteration??? AM I OKAY?!
+            //triangles.AddRange(new[] { v0, v1, v2}); //0 1 2
+            //triangles.AddRange(new[] { v2, v3, v0}); //2, 3, 0
+
+            triangles.Add(v0);
+            triangles.Add(v1);
+            triangles.Add(v2);
+            triangles.Add(v2);
+            triangles.Add(v3);
+            triangles.Add(v0);
         }
 
         mesh.vertices = vertices.ToArray();
@@ -47,11 +55,20 @@ public static class LevelEditorMeshUtility
         return mesh;
     }
 
-    public static void SaveMeshToFile(Mesh mesh, bool optimiseMesh, string nameOverride = null) {
+    public static void SaveMeshToFile(Mesh mesh, bool optimiseMesh, UnityEditor.ModelImporterMeshCompression compressionLevel = UnityEditor.ModelImporterMeshCompression.Off, string nameOverride = null) {
+        if (optimiseMesh)
+        {
+            UnityEditor.MeshUtility.SetMeshCompression(mesh, compressionLevel);
+            UnityEditor.MeshUtility.Optimize(mesh);
+        }
+
         if (string.IsNullOrEmpty(nameOverride))
             nameOverride = mesh.name;
 
         string filePath = UnityEditor.EditorUtility.SaveFilePanel("Save new mesh...", "Assets/", nameOverride, "asset");
-        Debug.Log($"Path: {filePath}");
+
+        //Create asset uses the relative path instead of full path... Who knew? I fucking didn't.
+        UnityEditor.AssetDatabase.CreateAsset(mesh, UnityEditor.FileUtil.GetProjectRelativePath(filePath));
+        UnityEditor.AssetDatabase.SaveAssets();
     }
 }
