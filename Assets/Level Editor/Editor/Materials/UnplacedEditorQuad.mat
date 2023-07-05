@@ -9,7 +9,8 @@ Material:
   m_PrefabAsset: {fileID: 0}
   m_Name: UnplacedEditorQuad
   m_Shader: {fileID: 4800000, guid: 9113d78d28ab1f94f8a98984a165df00, type: 3}
-  m_ValidKeywords: []
+  m_ValidKeywords:
+  - USE_VERTEX_COLORS
   m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -76,10 +77,11 @@ Material:
     - _SrcBlend: 1
     - _TexScale: 1
     - _UVSec: 0
+    - _UseVertexColors: 1
     - _WireThickness: 24.7
     - _ZWrite: 1
     m_Colors:
-    - _Color: {r: 0.5, g: 0.16694935, b: 0, a: 1}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _WireColor: {r: 1, g: 0.04265044, b: 0, a: 1}
   m_BuildTextureStacks: []
