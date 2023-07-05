@@ -8,7 +8,7 @@ public class LevelEditorWindow : EditorWindow
     //TO-DO
     //Asset importer for the Asset Data Scriptable Object with category sorting. - DONE
     //Unload button for asset data. - DONE
-    //Path mesh generator. (Yabe)
+    //Path mesh generator. - DONE SOMEHOW?! 天才か？！？
     //Combat zone creator. (Maji Yabe)
     //Idea -> ILevelEditorPage interface for handling other parts of the editor Path mesh gen, Combat zone creator, etc. - DONE
 
