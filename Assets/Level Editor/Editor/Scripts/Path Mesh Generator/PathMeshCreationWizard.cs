@@ -57,7 +57,6 @@ public class PathMeshCreationWizard : ScriptableWizard
             LevelEditorMeshUtility.SaveMeshToFile(mesh, false, ModelImporterMeshCompression.Off, _meshName);
 
         _pathMeshCreator = null;
-        Debug.Log("SS");
     }
 
     private void OnWizardOtherButton()

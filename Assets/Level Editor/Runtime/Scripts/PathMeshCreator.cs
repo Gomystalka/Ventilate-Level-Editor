@@ -61,29 +61,15 @@ public class PathMeshCreator : MonoBehaviour
 }
 
     private Rect _editWindowRect;
-    HashSet<Vertex> vertexSet = new HashSet<Vertex>();
 
     private void DrawQuadsSceneGUI(UnityEditor.SceneView sceneView)
     {
 #if UNITY_EDITOR
         if (!placedMaterial || !unplacedMaterial) return;
 
-        //GL.PushMatrix();
-        vertexSet.Clear();
-
         for (int q = 0; q < currentlyDrawnQuads.Count; ++q)
         {
             Quad quad = currentlyDrawnQuads[q];
-
-            for (int v = 0; v < 4; ++v) {
-
-                Vertex vertex = quad.Vertices[v];
-                if (!vertexSet.Contains(vertex)) {
-                    vertex.UniqueVertexIndex = q * 4 + v;
-                    vertexSet.Add(vertex);
-                }
-            }
-
             if (drawMode == DrawMode.Quad)
             {
                 GL.Begin(GL.QUADS);
@@ -257,9 +243,72 @@ public class PathMeshCreator : MonoBehaviour
 
         System.Array.Clear(sceneVertices, 0, sceneVertices.Length);
     }
+
+    public void SerializeCurrentQuadData() {
+        SerializedPathCreatorData data = new SerializedPathCreatorData();
+        data.IsInLocalView = _isLocalSpace;
+        data.DrawMode = drawMode;
+        data.UnplacedMaterialPath = UnityEditor.AssetDatabase.GetAssetPath(unplacedMaterial);
+        data.QuadSizeUnits = quadSize;
+        data.QuadColor = quadColor;
+        data.QuadData = new SerializedQuadData[currentlyDrawnQuads.Count];
+
+
+
+        for (int q = 0; q < currentlyDrawnQuads.Count; ++q) {
+            Quad quad = currentlyDrawnQuads[q];
+            data.QuadData[q] = SerializedQuadData.GenerateDataFromQuad(ref quad);
+            //currentlyDrawnQuads[q] = quad;
+        }
+
+        //Compile list of all vertices
+        //Compile list of Quad data. Vertices linked by indices
+        //Save connections by indices
+    }
+
+    public void DeserializeQuadData() { 
+        
+    }
 }
 
 public enum DrawMode {
     Quad,
     Triangle
+}
+
+[System.Serializable]
+public struct SerializedPathCreatorData {
+    public bool IsInLocalView { get; set; }
+    public DrawMode DrawMode { get; set; }
+    public string UnplacedMaterialPath { get; set; }
+    public float QuadSizeUnits { get; set; }
+    public Color QuadColor { get; set; }
+    public SerializedQuadData[] QuadData { get; set; }
+}
+[System.Serializable]
+public struct SerializedVertexData {
+    public Vector3 Position { get; set; }
+    public int Index { get; set; }
+    public int UniqueIndex { get; set; }
+    public SerializedConnectionData[] Connections { get; set; }
+}
+[System.Serializable]
+public struct SerializedQuadData {
+    public int QuadIndex { get; set; }
+    public SerializedVertexData[] VertexData { get; set; }
+
+    public static SerializedQuadData GenerateDataFromQuad(ref Quad quad) {
+        SerializedQuadData data = new SerializedQuadData();
+        data.QuadIndex = quad.QuadIndex;
+        data.VertexData = new SerializedVertexData[4];
+        //Implement IndexOf Vertex
+        //data.VertexData = 
+
+        return default;
+    }
+}
+[System.Serializable]
+public struct SerializedConnectionData {
+    public int QuadIndex { get; set; }
+    public int VertexIndex { get; set; }
 }

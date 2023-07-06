@@ -46,6 +46,10 @@ public class PathMeshEditorWindow : ILevelEditorWindow
             if (GUILayout.Button("Generate Mesh"))
                 PathMeshCreationWizard.Init(_pathMeshCreatorSceneReference);
         }
+
+        GUILayout.Space(100f);
+        if (GUILayout.Button("Serialize Current Data (WIP)"))
+            _pathMeshCreatorSceneReference.SerializeCurrentQuadData();
     }
 
     public void OnDestroy()
