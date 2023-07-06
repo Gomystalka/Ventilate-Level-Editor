@@ -5,25 +5,13 @@ using UnityEngine;
 public static class LevelEditorMeshUtility
 {
     public static Mesh GenerateMeshFromQuadData(ref List<Quad> drawnQuads) { //This will be slow.
-        List<Vector3> vertices = new List<Vector3>(drawnQuads.Count * 4);
-        List<Vector2> uv = new List<Vector2>(vertices.Capacity);
+        List<Vector2> uv = new List<Vector2>(drawnQuads.Count * 4);
+        List<Vector3> vertices = EnumerateVertexPositionsFromQuadList(ref drawnQuads, false, (vertex) => {
+            uv.Add(new Vector2(vertex.Position.x, vertex.Position.z));
+        });
         List<int> triangles = new List<int>(drawnQuads.Count * 8);
         Mesh mesh = new Mesh();
-        //HashSet<Vertex> usedVertices = new HashSet<Vertex>();
 
-        for (int q = 0; q < drawnQuads.Count; ++q) {
-            Quad quad = drawnQuads[q];
-
-            for (int v = 0; v < 4; ++v) {
-                Vertex vertex = quad.Vertices[v];
-                if (!vertices.Contains(vertex.Position))
-                {
-                    //usedVertices.Add(vertex); //This can probably just be a contains check on the vertices list tbh
-                    vertices.Add(vertex.Position);
-                    uv.Add(new Vector2(vertex.Position.x, vertex.Position.z));
-                }
-            }
-        }
         //There's probably a better way to do this but this works perfectly fine.
         for (int q = 0; q < drawnQuads.Count; ++q) {
             Quad quad = drawnQuads[q];
@@ -70,5 +58,22 @@ public static class LevelEditorMeshUtility
         //Create asset uses the relative path instead of full path... Who knew? I fucking didn't.
         UnityEditor.AssetDatabase.CreateAsset(mesh, UnityEditor.FileUtil.GetProjectRelativePath(filePath));
         UnityEditor.AssetDatabase.SaveAssets();
+    }
+
+    public static List<Vector3> EnumerateVertexPositionsFromQuadList(ref List<Quad> drawnQuads, bool includeDuplicates = false, System.Action<Vertex> enumerationCallback = null) {
+        List<Vector3> vertexPositions = new List<Vector3>(drawnQuads.Count * 4);
+        for (int q = 0; q < drawnQuads.Count; ++q)
+        {
+            for (int v = 0; v < 4; ++v)
+            {
+                Vertex vertex = drawnQuads[q].Vertices[v];
+                if (!vertexPositions.Contains(vertex.Position) || includeDuplicates)
+                {
+                    vertexPositions.Add(vertex.Position);
+                    enumerationCallback?.Invoke(vertex);
+                }
+            }
+        }
+        return vertexPositions;
     }
 }

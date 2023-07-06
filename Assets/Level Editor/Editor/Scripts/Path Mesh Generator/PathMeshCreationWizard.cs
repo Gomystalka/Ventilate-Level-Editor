@@ -14,7 +14,7 @@ public class PathMeshCreationWizard : ScriptableWizard
 
     internal static void Init(PathMeshCreator creator) {
         _pathMeshCreator = creator;
-        PathMeshCreationWizard w = DisplayWizard<PathMeshCreationWizard>("Path Mesh Generator", "Generate", "Close");
+        DisplayWizard<PathMeshCreationWizard>("Path Mesh Generator", "Generate", "Close");
     }
 
     protected override bool DrawWizardGUI()

@@ -244,30 +244,41 @@ public class PathMeshCreator : MonoBehaviour
         System.Array.Clear(sceneVertices, 0, sceneVertices.Length);
     }
 
-    public void SerializeCurrentQuadData() {
+    public string SerializeCurrentQuadData() {
         SerializedPathCreatorData data = new SerializedPathCreatorData();
-        data.IsInLocalView = _isLocalSpace;
-        data.DrawMode = drawMode;
-        data.UnplacedMaterialPath = UnityEditor.AssetDatabase.GetAssetPath(unplacedMaterial);
-        data.QuadSizeUnits = quadSize;
-        data.QuadColor = quadColor;
-        data.QuadData = new SerializedQuadData[currentlyDrawnQuads.Count];
-
-
+        data.isInLocalView = _isLocalSpace;
+        data.drawMode = drawMode;
+        data.unplacedMaterialPath = UnityEditor.AssetDatabase.GetAssetPath(unplacedMaterial);
+        data.quadSizeUnits = quadSize;
+        data.quadColor = quadColor;
+        data.quadData = new SerializedQuadData[currentlyDrawnQuads.Count];
+        List<Vector3> vertexPositions = LevelEditorMeshUtility.EnumerateVertexPositionsFromQuadList(ref currentlyDrawnQuads);
 
         for (int q = 0; q < currentlyDrawnQuads.Count; ++q) {
             Quad quad = currentlyDrawnQuads[q];
-            data.QuadData[q] = SerializedQuadData.GenerateDataFromQuad(ref quad);
-            //currentlyDrawnQuads[q] = quad;
+            data.quadData[q] = SerializedQuadData.GenerateDataFromQuad(ref quad, ref vertexPositions);
         }
 
-        //Compile list of all vertices
-        //Compile list of Quad data. Vertices linked by indices
-        //Save connections by indices
+        //Compile list of all vertices - DONE
+        //Compile list of Quad data. Vertices linked by indices - DONE
+        //Save connections by indices - DONE
+
+        return JsonUtility.ToJson(data, true);
     }
 
-    public void DeserializeQuadData() { 
-        
+    public void DeserializeQuadData(string jsonString) {
+        SerializedPathCreatorData data = JsonUtility.FromJson<SerializedPathCreatorData>(jsonString);
+        if (!data.IsValid) {
+            Debug.LogError($"Failed to deserialize quad data!");
+            return;
+        }
+
+        Debug.Log($"Quads to deserialize: {data.quadData.Length}");
+        SerializedQuadData[] quads = data.quadData;
+
+        //List<Vector3> loadedVertices = LevelEditorMeshUtility.EnumerateVertexPositionsFromSerializedQuadArray(ref quads);
+        List<Vertex> sceneVertices = LevelEditorSerializationUtility.CreateVertexSceneObjectsFromSerializedQuadData(ref quads);
+        //foreach(Vector3 )
     }
 }
 
@@ -278,37 +289,53 @@ public enum DrawMode {
 
 [System.Serializable]
 public struct SerializedPathCreatorData {
-    public bool IsInLocalView { get; set; }
-    public DrawMode DrawMode { get; set; }
-    public string UnplacedMaterialPath { get; set; }
-    public float QuadSizeUnits { get; set; }
-    public Color QuadColor { get; set; }
-    public SerializedQuadData[] QuadData { get; set; }
+    public bool isInLocalView;
+    public DrawMode drawMode;
+    public string unplacedMaterialPath;
+    public float quadSizeUnits;
+    public Color quadColor;
+    public SerializedQuadData[] quadData;
+
+    public bool IsValid => quadData != null && quadData.Length != 0;
 }
 [System.Serializable]
 public struct SerializedVertexData {
-    public Vector3 Position { get; set; }
-    public int Index { get; set; }
-    public int UniqueIndex { get; set; }
-    public SerializedConnectionData[] Connections { get; set; }
+    public Vector3 position;
+    public int index;
+    public int uniqueIndex;
+    public SerializedConnectionData[] connections;
 }
 [System.Serializable]
 public struct SerializedQuadData {
-    public int QuadIndex { get; set; }
-    public SerializedVertexData[] VertexData { get; set; }
+    public int quadIndex;
+    public SerializedVertexData[] vertexData;
 
-    public static SerializedQuadData GenerateDataFromQuad(ref Quad quad) {
+    public static SerializedQuadData GenerateDataFromQuad(ref Quad quad, ref List<Vector3> allUniqueVertexPositions) {
         SerializedQuadData data = new SerializedQuadData();
-        data.QuadIndex = quad.QuadIndex;
-        data.VertexData = new SerializedVertexData[4];
-        //Implement IndexOf Vertex
-        //data.VertexData = 
+        data.quadIndex = quad.QuadIndex;
+        data.vertexData = new SerializedVertexData[4];
+        for (int v = 0; v < 4; ++v) {
+            Vertex vertex = quad.Vertices[v];
+            data.vertexData[v].index = v;
+            data.vertexData[v].uniqueIndex = allUniqueVertexPositions.IndexOf(vertex.Position);
+            data.vertexData[v].position = vertex.Position;
+            data.vertexData[v].connections = SerializedConnectionData.GenerateSerializableConnectionData(vertex.Connections);
+        }
 
-        return default;
+        return data;
     }
 }
 [System.Serializable]
 public struct SerializedConnectionData {
-    public int QuadIndex { get; set; }
-    public int VertexIndex { get; set; }
+    public int quadIndex;
+    public int vertexIndex;
+
+    public static SerializedConnectionData[] GenerateSerializableConnectionData(List<VertexConnection> connections) {
+        SerializedConnectionData[] connectionData = new SerializedConnectionData[connections.Count];
+        for (int c = 0; c < connections.Count; ++c) {
+            connectionData[c].quadIndex = connections[c].quad.QuadIndex;
+            connectionData[c].vertexIndex = connections[c].vertexIndex;
+        }
+        return connectionData;
+    }
 }

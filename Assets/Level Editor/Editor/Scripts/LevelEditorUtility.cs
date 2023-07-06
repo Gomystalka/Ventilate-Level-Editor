@@ -14,7 +14,6 @@ public static class LevelEditorUtility
 
         spriteDir = spriteDir.Replace('\\', '/'); //Make sure all slashes are forward slashes for the next step.
         spriteDir = spriteDir.Substring(0, spriteDir.LastIndexOf('/') + 1); //Get the directory before the script folder.
-        spriteDir = spriteDir.Substring(spriteDir.IndexOf("Assets")); //Get the path relative to the project folder as required by AssetDatabase.
         return AssetDatabase.LoadAssetAtPath<Texture2D>(System.IO.Path.Combine(spriteDir, "sprites", textureFileName));
     }
 

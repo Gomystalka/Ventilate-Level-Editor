@@ -5,6 +5,8 @@ using UnityEditor;
 
 public class PathMeshEditorWindow : ILevelEditorWindow
 {
+    private const bool kEncodeSerializedData = false;
+
     private const string kPathMeshEditorGameObjectName = "SceneObject:PathMeshEditor";
 
     public string Title => "Path Mesh Editor";
@@ -29,27 +31,62 @@ public class PathMeshEditorWindow : ILevelEditorWindow
         {
             if (GUILayout.Button("Create Source Quad"))
             {
-                if(_pathMeshCreatorSceneReference.currentlyDrawnQuads.Count == 0) //Fail safe.
+                if (_pathMeshCreatorSceneReference.currentlyDrawnQuads.Count == 0) //Fail safe.
                     _pathMeshCreatorSceneReference.GeneratePresetQuad();
             }
         }
         EditorGUI.BeginDisabledGroup(_pathMeshCreatorSceneReference && _pathMeshCreatorSceneReference.currentlyDrawnQuads.Count == 0);
-        if (GUILayout.Button("Clear All Quads")) {
-            if(EditorUtility.DisplayDialog("Clear All Quads", "Are you sure that you'd like to remove all quads currently in the scene?" +
+        if (GUILayout.Button("Clear All Quads"))
+        {
+            if (EditorUtility.DisplayDialog("Clear All Quads", "Are you sure that you'd like to remove all quads currently in the scene?" +
                 "\nThis action cannot be undone!", "Yes", "No"))
                 _pathMeshCreatorSceneReference.DestroyAllQuads();
         }
         EditorGUI.EndDisabledGroup();
         EditorGUI.EndDisabledGroup();
 
-        if (_pathMeshCreatorSceneReference.currentlyDrawnQuads.Count > 0) {
+        if (_pathMeshCreatorSceneReference.currentlyDrawnQuads.Count > 0)
+        {
             if (GUILayout.Button("Generate Mesh"))
                 PathMeshCreationWizard.Init(_pathMeshCreatorSceneReference);
         }
 
         GUILayout.Space(100f);
         if (GUILayout.Button("Serialize Current Data (WIP)"))
-            _pathMeshCreatorSceneReference.SerializeCurrentQuadData();
+        {
+            //string serializedJsonString = _pathMeshCreatorSceneReference.SerializeCurrentQuadData();
+            string savePath = OwnerWindow.GetScriptableObjectScriptPath();
+            savePath = savePath.Substring(0, savePath.IndexOf("/Editor/") + 8);
+            savePath = System.IO.Path.Combine(savePath, "Path Cache", "CurrentMesh.poi");
+            string content = _pathMeshCreatorSceneReference.SerializeCurrentQuadData();
+            if (kEncodeSerializedData)
+            {
+                byte[] outputBytes = System.Text.Encoding.UTF8.GetBytes(_pathMeshCreatorSceneReference.SerializeCurrentQuadData());
+                content = System.Convert.ToBase64String(outputBytes);
+            }
+
+            System.IO.File.WriteAllText(savePath, content);
+        }
+
+        if (GUILayout.Button("Try Deserialize Current Data (SUPER MEGA WIP)")) {
+            string loadPath = OwnerWindow.GetScriptableObjectScriptPath();
+            loadPath = loadPath.Substring(0, loadPath.IndexOf("/Editor/") + 8);
+            loadPath = System.IO.Path.Combine(loadPath, "Path Cache", "CurrentMesh.poi");
+            string content;
+
+            if (System.IO.File.Exists(loadPath))
+            {
+                content = System.IO.File.ReadAllText(loadPath);
+                if (kEncodeSerializedData)
+                {
+                    byte[] bytes = System.Convert.FromBase64String(content);
+                    content = System.Text.Encoding.UTF8.GetString(bytes);
+                }
+                _pathMeshCreatorSceneReference.DeserializeQuadData(content);
+            }
+            else
+                Debug.LogWarning("Serialized quad data file doesn't exist!");
+        }
     }
 
     public void OnDestroy()
