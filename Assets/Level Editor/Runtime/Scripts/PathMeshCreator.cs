@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,20 +15,34 @@ public class PathMeshCreator : MonoBehaviour
     public float quadSize = 2f;
     
     [Header("References")]
-    public Material placedMaterial;
     public Material unplacedMaterial;
 
     public Color quadColor = Color.red;
     public DrawMode drawMode;
 
-    public List<Quad> currentlyDrawnQuads = new List<Quad>(); //Somehow serialize this...
+    public List<Quad> currentlyDrawnQuads = new List<Quad>();
+    public int QuadCount => currentlyDrawnQuads.Count;
+
+#if !UNITY_EDITOR
+    private void Awake()
+    {
+        Debug.LogWarning("The Path Mesh editor was left within the scene! This object MUST be removed from the scene before building the application. The object was automatically removed.");
+        Destroy(gameObject);
+    }
+#endif
 
     private void OnEnable()
     {
 #if UNITY_EDITOR
-        UnityEditor.SceneView.duringSceneGui -= DrawQuadsSceneGUI;
-        UnityEditor.SceneView.duringSceneGui += DrawQuadsSceneGUI;
+        if (!Application.isPlaying)
+        {
+            UnityEditor.SceneView.duringSceneGui -= DrawQuadsSceneGUI;
+            UnityEditor.SceneView.duringSceneGui += DrawQuadsSceneGUI;
+        }
 #endif
+
+        if (Application.isPlaying)
+            Destroy(gameObject);
     }
 
     private void OnDisable()
@@ -62,10 +77,10 @@ public class PathMeshCreator : MonoBehaviour
 
     private Rect _editWindowRect;
 
+#if UNITY_EDITOR
     private void DrawQuadsSceneGUI(UnityEditor.SceneView sceneView)
     {
-#if UNITY_EDITOR
-        if (!placedMaterial || !unplacedMaterial) return;
+        if (!unplacedMaterial) return;
 
         for (int q = 0; q < currentlyDrawnQuads.Count; ++q)
         {
@@ -96,16 +111,16 @@ public class PathMeshCreator : MonoBehaviour
                     UnityEditor.Handles.color = Color.red;
 
                 int index = ((int)direction) - 1; //Subtract 1 because of Direction.None
-                if (quad.DirectionLocks[index]) continue;
+                //if (quad.DirectionLocks[index]) continue;
 
                 normal = quad.GetEdgeNormal(direction);
                 if (UnityEditor.Handles.Button(quad.GetEdge(direction),
                     Quaternion.LookRotation(normal), 0.05f, 0.05f, UnityEditor.Handles.DotHandleCap)) {
                     Quad newQuad = GeneratePresetQuad(quad, direction);
-                    quad.DirectionLocks[index] = true;
+                    //quad.DirectionLocks[index] = true;
 
-                    Quad.Direction invertedDirection = Quad.GetInvertedDirection(direction);                  
-                    newQuad.DirectionLocks[((byte)invertedDirection) - 1] = true;
+                    //Quad.Direction invertedDirection = Quad.GetInvertedDirection(direction);                  
+                    //newQuad.DirectionLocks[((byte)invertedDirection) - 1] = true;
                 }
             }
         }
@@ -130,14 +145,17 @@ public class PathMeshCreator : MonoBehaviour
 
                 DrawConnectVerticesControl(ref contentRect);
                 DrawDisconnectVerticesControl(ref contentRect);
+                DrawDeleteQuadControl(ref contentRect);
 
                 GUI.DragWindow();
             }, "Path Tools");
 
             UnityEditor.Handles.EndGUI();
         }
-#endif
     }
+#else
+    private void DrawQuadsSceneGUI(object _) {}
+#endif
 
     private bool _isLocalSpace;
 
@@ -188,6 +206,42 @@ public class PathMeshCreator : MonoBehaviour
 #endif
     }
 
+    private void DrawDeleteQuadControl(ref Rect contentRect)
+    {
+#if UNITY_EDITOR
+        if (UnityEditor.Selection.count != 1) return;
+        if (UnityEditor.Selection.objects[0] is GameObject go)
+        {
+            Vertex v = go.GetComponent<Vertex>();
+            if (!v) return;
+
+            contentRect.y += 20f;
+            contentRect.height = 20f;
+
+            if (GUI.Button(contentRect, $"Delete Quad {v.Owner.QuadIndex}"))
+            {
+                TryDeleteQuad(v.Owner.QuadIndex);
+                //v.Disconnect();
+                UnityEditor.Selection.activeObject = null;
+            }
+        }
+#endif
+    }
+
+    private void TryDeleteQuad(int quadIndex) { //It's easier working with indices 
+        for (int q = currentlyDrawnQuads.Count - 1; q >= 0; --q)
+        {
+            if (quadIndex == q)
+            {
+                currentlyDrawnQuads[q].Destroy(true);
+                currentlyDrawnQuads.RemoveAt(q);
+            }
+        }
+
+        for (int q = 0; q < currentlyDrawnQuads.Count; ++q) //Re-set indices as they will no longer be valid
+            currentlyDrawnQuads[q].QuadIndex = q;
+    }
+
     private void SetVertexSpace()
     {
         foreach (Quad q in currentlyDrawnQuads)
@@ -195,9 +249,9 @@ public class PathMeshCreator : MonoBehaviour
     }
 
     private void CheckForConnectableVerticesInSelection(out Vertex vertex1, out Vertex vertex2) {
-#if UNITY_EDITOR
-        vertex1 = null; 
+        vertex1 = null;
         vertex2 = null;
+#if UNITY_EDITOR
         if (UnityEditor.Selection.count != 2) return; 
 
         //This "Should" preserve selection order.
@@ -205,16 +259,13 @@ public class PathMeshCreator : MonoBehaviour
             vertex1 = go.GetComponent<Vertex>();
         if (UnityEditor.Selection.objects[1] is GameObject go2)
             vertex2 = go2.GetComponent<Vertex>();
-
-        //vertex1 = UnityEditor.Selection.gameObjects[0].GetComponent<Vertex>();
-        //vertex2 = UnityEditor.Selection.gameObjects[1].GetComponent<Vertex>();
 #endif
     }
 
 
     public void DestroyAllQuads() {
         foreach (Quad quad in currentlyDrawnQuads)
-            quad.Destroy();
+            quad.Destroy(false);
 
         currentlyDrawnQuads.Clear();
         currentlyDrawnQuads.Capacity = 0;
@@ -222,7 +273,7 @@ public class PathMeshCreator : MonoBehaviour
 
     public void ResetWindowState() {
 #if UNITY_EDITOR
-        _editWindowRect = new Rect(400, 200, 200, 80);
+        _editWindowRect = new Rect(400, 300, 200, 100);
 #endif
     }
 
@@ -248,20 +299,19 @@ public class PathMeshCreator : MonoBehaviour
         SerializedPathCreatorData data = new SerializedPathCreatorData();
         data.isInLocalView = _isLocalSpace;
         data.drawMode = drawMode;
+#if UNITY_EDITOR
         data.unplacedMaterialPath = UnityEditor.AssetDatabase.GetAssetPath(unplacedMaterial);
+#endif
         data.quadSizeUnits = quadSize;
         data.quadColor = quadColor;
+        data.vertexData = LevelEditorSerializationUtility.CreateVertexDataFromQuadList(ref currentlyDrawnQuads).ToArray(); 
         data.quadData = new SerializedQuadData[currentlyDrawnQuads.Count];
-        List<Vector3> vertexPositions = LevelEditorMeshUtility.EnumerateVertexPositionsFromQuadList(ref currentlyDrawnQuads);
 
-        for (int q = 0; q < currentlyDrawnQuads.Count; ++q) {
-            Quad quad = currentlyDrawnQuads[q];
-            data.quadData[q] = SerializedQuadData.GenerateDataFromQuad(ref quad, ref vertexPositions);
+        for (int q = 0; q < data.quadData.Length; ++q) {
+            data.quadData[q].vertexIndices = new int[4];
+            for (int v = 0; v < 4; ++v)
+                data.quadData[q].vertexIndices[v] = currentlyDrawnQuads[q].Vertices[v].UniqueVertexIndex; //UniqueVertexIndex will be correct due to the CreateVertexDataFromQuadList call.
         }
-
-        //Compile list of all vertices - DONE
-        //Compile list of Quad data. Vertices linked by indices - DONE
-        //Save connections by indices - DONE
 
         return JsonUtility.ToJson(data, true);
     }
@@ -273,69 +323,25 @@ public class PathMeshCreator : MonoBehaviour
             return;
         }
 
-        Debug.Log($"Quads to deserialize: {data.quadData.Length}");
-        SerializedQuadData[] quads = data.quadData;
+        _isLocalSpace = data.isInLocalView;
+        drawMode = data.drawMode;
+#if UNITY_EDITOR
+        unplacedMaterial = UnityEditor.AssetDatabase.LoadAssetAtPath<Material>(data.unplacedMaterialPath);
+        if (!unplacedMaterial)
+            Debug.LogError($"[{typeof(PathMeshCreator)}]: Failed to load Unplaced Material resource! Check if the path is correct and if the material is not corrupted!", this);
+#endif
+        quadSize = data.quadSizeUnits;
+        quadColor = data.quadColor;
 
-        //List<Vector3> loadedVertices = LevelEditorMeshUtility.EnumerateVertexPositionsFromSerializedQuadArray(ref quads);
-        List<Vertex> sceneVertices = LevelEditorSerializationUtility.CreateVertexSceneObjectsFromSerializedQuadData(ref quads);
-        //foreach(Vector3 )
+        foreach (Quad q in currentlyDrawnQuads)
+            q.Destroy(false);
+        currentlyDrawnQuads.Clear();
+
+        currentlyDrawnQuads = LevelEditorSerializationUtility.CreateQuadsFromPathData(ref data, transform);
     }
 }
 
 public enum DrawMode {
     Quad,
     Triangle
-}
-
-[System.Serializable]
-public struct SerializedPathCreatorData {
-    public bool isInLocalView;
-    public DrawMode drawMode;
-    public string unplacedMaterialPath;
-    public float quadSizeUnits;
-    public Color quadColor;
-    public SerializedQuadData[] quadData;
-
-    public bool IsValid => quadData != null && quadData.Length != 0;
-}
-[System.Serializable]
-public struct SerializedVertexData {
-    public Vector3 position;
-    public int index;
-    public int uniqueIndex;
-    public SerializedConnectionData[] connections;
-}
-[System.Serializable]
-public struct SerializedQuadData {
-    public int quadIndex;
-    public SerializedVertexData[] vertexData;
-
-    public static SerializedQuadData GenerateDataFromQuad(ref Quad quad, ref List<Vector3> allUniqueVertexPositions) {
-        SerializedQuadData data = new SerializedQuadData();
-        data.quadIndex = quad.QuadIndex;
-        data.vertexData = new SerializedVertexData[4];
-        for (int v = 0; v < 4; ++v) {
-            Vertex vertex = quad.Vertices[v];
-            data.vertexData[v].index = v;
-            data.vertexData[v].uniqueIndex = allUniqueVertexPositions.IndexOf(vertex.Position);
-            data.vertexData[v].position = vertex.Position;
-            data.vertexData[v].connections = SerializedConnectionData.GenerateSerializableConnectionData(vertex.Connections);
-        }
-
-        return data;
-    }
-}
-[System.Serializable]
-public struct SerializedConnectionData {
-    public int quadIndex;
-    public int vertexIndex;
-
-    public static SerializedConnectionData[] GenerateSerializableConnectionData(List<VertexConnection> connections) {
-        SerializedConnectionData[] connectionData = new SerializedConnectionData[connections.Count];
-        for (int c = 0; c < connections.Count; ++c) {
-            connectionData[c].quadIndex = connections[c].quad.QuadIndex;
-            connectionData[c].vertexIndex = connections[c].vertexIndex;
-        }
-        return connectionData;
-    }
 }

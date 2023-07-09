@@ -16,6 +16,8 @@ public class Vertex : MonoBehaviour
 
     public Vector3 Position => transform.position;
 
+    public bool ShowVertexIndices { get; set; } = false;
+
     private void OnDrawGizmos()
     {
         CheckForVertexSelection();
@@ -24,9 +26,12 @@ public class Vertex : MonoBehaviour
         Gizmos.DrawSphere(transform.position, 0.05f);
 
 #if UNITY_EDITOR
-        GUIStyle style = new GUIStyle(UnityEditor.EditorStyles.boldLabel);
-        style.fontSize = 32;
-        UnityEditor.Handles.Label(transform.position + (Vector3.up * 0.25f), UniqueVertexIndex.ToString(), style);
+        if (ShowVertexIndices)
+        {
+            GUIStyle style = new GUIStyle(UnityEditor.EditorStyles.boldLabel);
+            style.fontSize = 32;
+            UnityEditor.Handles.Label(transform.position + (Vector3.up * 0.25f), UniqueVertexIndex.ToString(), style);
+        }
 #endif
     }
 
@@ -88,6 +93,17 @@ public class Vertex : MonoBehaviour
 #if UNITY_EDITOR
             DestroyImmediate(gameObject);
 #endif
+        }
+    }
+
+    public void BreakConnectionWithQuad(Quad quad) {
+        for (int c = 0; c < _connections.Count; c++)
+        {
+            if (_connections[c].quad == quad)
+            {
+                _connections.RemoveAt(c);
+                break;
+            }
         }
     }
 
@@ -158,13 +174,28 @@ public class VertexInspector : UnityEditor.Editor {
         Vertex v = (Vertex)target;
         System.Text.StringBuilder sb = new System.Text.StringBuilder();
 
-        foreach (VertexConnection connection in v.Connections)
-            sb.AppendLine(connection.ToString());
+        for(int c = 0; c < v.Connections.Count; ++c)
+        {
+            VertexConnection connection = v.Connections[c];
+            sb.Append(connection.ToString());
+            sb.Append(" - ");
+            sb.Append(connection.quad != null ? "ALIVE" : "DEAD");
+            if(c != v.Connections.Count)
+                sb.AppendLine();
+        }
 
         UnityEditor.EditorGUILayout.HelpBox($"Connections:{System.Environment.NewLine}{sb}", UnityEditor.MessageType.None, true);
 
         sb.Length = 0;
         sb.Capacity = 0;
+    }
+
+    private void OnSceneGUI()
+    {
+        if (Event.current.keyCode == KeyCode.Delete) {
+            Debug.LogWarning("Delete attempt detected. Vertices should not be deleted manually! Deleting a vertex will cause the entire mesh to break! Please use the supplied Path Tools window for vertex/quad operations.");
+            Event.current.Use();
+        }
     }
 }
 #endif

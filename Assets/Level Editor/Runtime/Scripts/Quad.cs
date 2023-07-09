@@ -6,10 +6,10 @@ public class Quad
 {
     //TO-DO
     //-Properly lock directional buttons (NSY)
-    //-Save to mesh
-    //  -Every vertex has unique ID. Connected vertices share IDs. Creating new Vertex will assign a new ID. Vector3 Position to index map?
-    //  -Quads into triangles
-    //  -Draw in order of creation.
+    //-Save to mesh - DONE
+    //  -Every vertex has unique ID. Connected vertices share IDs. Creating new Vertex will assign a new ID. Vector3 Position to index map? - DONE
+    //  -Quads into triangles - DONE
+    //  -Draw in order of creation. - DONE
     public Vertex[] Vertices { get; private set; } = new Vertex[4];
     //public Quad[] VertexOwners { get; private set; } = new Quad[4];
 
@@ -21,9 +21,9 @@ public class Quad
 
     public Transform Parent { get; set; }
 
-    public bool[] DirectionLocks = new bool[4];
+    //public bool[] DirectionLocks = new bool[4];
 
-    public int QuadIndex { get; private set; } = 0;
+    public int QuadIndex { get; set; } = 0;
 
     public bool IsSelected //lol
     {
@@ -31,11 +31,22 @@ public class Quad
         //Vertex.CurrentlySelectedVertex == Vertices[1] ||
         //Vertex.CurrentlySelectedVertex == Vertices[2] ||
         //Vertex.CurrentlySelectedVertex == Vertices[3];
-
+#if UNITY_EDITOR
         get => UnityEditor.Selection.Contains(Vertices[0].gameObject) ||
         UnityEditor.Selection.Contains(Vertices[1].gameObject) ||
         UnityEditor.Selection.Contains(Vertices[2].gameObject) ||
         UnityEditor.Selection.Contains(Vertices[3].gameObject);
+#else
+        get => false;
+#endif
+    }
+
+    //Used for deserialization so I can keep the QuadIndex property's setter private.
+    public static Quad CreateEmptyIndexedQuad(int quadIndex) {
+        return new Quad() { 
+            QuadIndex = quadIndex,
+            Vertices = new Vertex[4]
+        };
     }
 
     public static Quad CreateQuad(Vector3 startCornerPosition, float quadSizeUnits = 1f, int quadIndex = 0)
@@ -151,13 +162,14 @@ public class Quad
         Vertices[3].SetParent(parent, worldPositionStays);
     }
 
-    public void Destroy()
+    public void Destroy(bool checkForConnections)
     { //Removes the vertices from the scene
         for (int v = 0; v < Vertices.Length; ++v)
         {
             Vertex vertex = Vertices[v];
-            if (!vertex) continue;
+            if (!vertex) continue; //If a vertex has 0 or 1 connections, it's not connected to anything so it can be safely removed.
 
+            if (checkForConnections && vertex.Connections.Count > 1) continue; //This part needs an ownership check
             if (Application.isPlaying)
                 Object.Destroy(vertex.gameObject);
             else
@@ -167,6 +179,14 @@ public class Quad
                 Object.DestroyImmediate(vertex.gameObject);
 #endif
             }
+        }
+        //Delete first, then break connections for any vertices that are still alive.
+
+        for (int v = 0; v < Vertices.Length; ++v) {
+            Vertex vertex = Vertices[v];
+            if (!vertex) continue;
+
+            vertex.BreakConnectionWithQuad(this);
             Vertices[v] = null;
         }
     }

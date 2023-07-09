@@ -18,7 +18,8 @@ public class LevelEditorWindow : EditorWindow
     public Vector2 Size => position.size;
 
     private static List<ILevelEditorWindow> _editorWindows = new List<ILevelEditorWindow>();
-    private static int _currentEditorWindowIndex = 0;
+    private static LevelEditorMessageSystem _messageSystem = LevelEditorMessageSystem.instance;
+    public int currentEditorWindowIndex = 0;
 
     private static string[] _availableEditors = new string[0];
 
@@ -33,15 +34,16 @@ public class LevelEditorWindow : EditorWindow
     private void OnGUI()
     {
         EditorGUI.BeginChangeCheck();
-        int lastEditorWindowIndex = _currentEditorWindowIndex;
-        _currentEditorWindowIndex = GUILayout.Toolbar(_currentEditorWindowIndex, _availableEditors);
+        int lastEditorWindowIndex = currentEditorWindowIndex;
+        currentEditorWindowIndex = GUILayout.Toolbar(currentEditorWindowIndex, _availableEditors);
         if (EditorGUI.EndChangeCheck())
         {
             _editorWindows[lastEditorWindowIndex].OnWindowClosed();
-            _editorWindows[_currentEditorWindowIndex].OnWindowOpened();
+            _editorWindows[currentEditorWindowIndex].OnWindowOpened();
         }
 
-        _editorWindows[_currentEditorWindowIndex].OnGUI();
+        _editorWindows[currentEditorWindowIndex].OnGUI();
+        _messageSystem.OnGUI();
 
         wantsMouseMove = true;
         if (Event.current.type == EventType.MouseMove) //This is required for the GUI to be always updated.
@@ -55,12 +57,16 @@ public class LevelEditorWindow : EditorWindow
 
         foreach (ILevelEditorWindow editorWindow in _editorWindows)
             editorWindow.OnEnable();
+
+        _messageSystem.OnEnable();
     }
 
     private void OnDisable()
     {
         foreach (ILevelEditorWindow editorWindow in _editorWindows)
             editorWindow.OnDisable();
+
+        _messageSystem.OnDisable();
     }
 
     private void OnDestroy()

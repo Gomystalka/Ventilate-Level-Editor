@@ -48,15 +48,29 @@ public class PathMeshCreationWizard : ScriptableWizard
         Mesh mesh = LevelEditorMeshUtility.GenerateMeshFromQuadData(ref _pathMeshCreator.currentlyDrawnQuads);
         MeshFilter filter = meshObjectInScene.AddComponent<MeshFilter>();
         MeshRenderer renderer = meshObjectInScene.AddComponent<MeshRenderer>();
-        //GeneratedPathMesh pathMesh = meshObjectInScene.AddComponent<GeneratedPathMesh>();
+        GeneratedPathMesh pathMesh = meshObjectInScene.AddComponent<GeneratedPathMesh>();
 
         renderer.material = _material;
         filter.sharedMesh = mesh;
 
+        string meshEditorDataPath;
         if (_saveToFile)
-            LevelEditorMeshUtility.SaveMeshToFile(mesh, false, ModelImporterMeshCompression.Off, _meshName);
+        {
+            string path = LevelEditorMeshUtility.SaveMeshToFile(mesh, false, ModelImporterMeshCompression.Off, _meshName) + PathMeshEditorWindow.kDefaultCurrentSessionFileExtension;
+            meshEditorDataPath = path;
+            System.IO.File.WriteAllText(path, _pathMeshCreator.SerializeCurrentQuadData());
+        }
+        else
+        {
+            meshEditorDataPath = this.GetScriptableObjectScriptPath();
+            meshEditorDataPath = meshEditorDataPath.Substring(0, meshEditorDataPath.IndexOf("/Editor/") + 8);
+            meshEditorDataPath = System.IO.Path.Combine(meshEditorDataPath, "Path Cache", "Unsaved", $"{_meshName}{PathMeshEditorWindow.kDefaultCurrentSessionFileExtension}");
+            System.IO.File.WriteAllText(meshEditorDataPath, _pathMeshCreator.SerializeCurrentQuadData());
+        }
 
+        pathMesh.meshCachePath = meshEditorDataPath;
         _pathMeshCreator = null;
+        LevelEditorMessageSystem.Push($"Mesh Generation Complete.", 2f, LevelEditorMessageSystem.MessageType.Info);
     }
 
     private void OnWizardOtherButton()

@@ -1,0 +1,136 @@
+{
+    "isInLocalView": false,
+    "drawMode": 0,
+    "unplacedMaterialPath": "Assets/Level Editor/Editor/Materials/UnplacedEditorQuad.mat",
+    "quadSizeUnits": 2.0,
+    "quadColor": {
+        "r": 0.3820754885673523,
+        "g": 0.8784496188163757,
+        "b": 1.0,
+        "a": 1.0
+    },
+    "vertexData": [
+        {
+            "position": {
+                "x": 0.0,
+                "y": -0.020999999716877939,
+                "z": 0.0
+            },
+            "index": 0,
+            "uniqueIndex": 0,
+            "quadOwnerIndex": 0,
+            "connections": [
+                {
+                    "quadIndex": 0,
+                    "vertexIndex": 0
+                },
+                {
+                    "quadIndex": 1,
+                    "vertexIndex": 1
+                }
+            ]
+        },
+        {
+            "position": {
+                "x": 0.0,
+                "y": -0.020999999716877939,
+                "z": 2.0
+            },
+            "index": 1,
+            "uniqueIndex": 1,
+            "quadOwnerIndex": 0,
+            "connections": [
+                {
+                    "quadIndex": 0,
+                    "vertexIndex": 1
+                }
+            ]
+        },
+        {
+            "position": {
+                "x": 2.0,
+                "y": -0.020999999716877939,
+                "z": 2.0
+            },
+            "index": 2,
+            "uniqueIndex": 2,
+            "quadOwnerIndex": 0,
+            "connections": [
+                {
+                    "quadIndex": 0,
+                    "vertexIndex": 2
+                }
+            ]
+        },
+        {
+            "position": {
+                "x": 3.2699999809265138,
+                "y": -0.020999999716877939,
+                "z": -1.0800000429153443
+            },
+            "index": 3,
+            "uniqueIndex": 3,
+            "quadOwnerIndex": 0,
+            "connections": [
+                {
+                    "quadIndex": 0,
+                    "vertexIndex": 3
+                },
+                {
+                    "quadIndex": 1,
+                    "vertexIndex": 2
+                }
+            ]
+        },
+        {
+            "position": {
+                "x": -0.6272262930870056,
+                "y": -0.020999999716877939,
+                "z": -1.8991016149520875
+            },
+            "index": 0,
+            "uniqueIndex": 4,
+            "quadOwnerIndex": 1,
+            "connections": [
+                {
+                    "quadIndex": 1,
+                    "vertexIndex": 0
+                }
+            ]
+        },
+        {
+            "position": {
+                "x": 2.6427736282348635,
+                "y": -0.020999999716877939,
+                "z": -2.9791016578674318
+            },
+            "index": 3,
+            "uniqueIndex": 5,
+            "quadOwnerIndex": 1,
+            "connections": [
+                {
+                    "quadIndex": 1,
+                    "vertexIndex": 3
+                }
+            ]
+        }
+    ],
+    "quadData": [
+        {
+            "vertexIndices": [
+                0,
+                1,
+                2,
+                3
+            ]
+        },
+        {
+            "vertexIndices": [
+                4,
+                0,
+                3,
+                5
+            ]
+        }
+    ]
+}

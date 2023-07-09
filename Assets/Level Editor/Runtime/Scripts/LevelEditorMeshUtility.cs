@@ -43,7 +43,8 @@ public static class LevelEditorMeshUtility
         return mesh;
     }
 
-    public static void SaveMeshToFile(Mesh mesh, bool optimiseMesh, UnityEditor.ModelImporterMeshCompression compressionLevel = UnityEditor.ModelImporterMeshCompression.Off, string nameOverride = null) {
+#if UNITY_EDITOR
+    public static string SaveMeshToFile(Mesh mesh, bool optimiseMesh, UnityEditor.ModelImporterMeshCompression compressionLevel = UnityEditor.ModelImporterMeshCompression.Off, string nameOverride = null) {
         if (optimiseMesh)
         {
             UnityEditor.MeshUtility.SetMeshCompression(mesh, compressionLevel);
@@ -58,7 +59,10 @@ public static class LevelEditorMeshUtility
         //Create asset uses the relative path instead of full path... Who knew? I fucking didn't.
         UnityEditor.AssetDatabase.CreateAsset(mesh, UnityEditor.FileUtil.GetProjectRelativePath(filePath));
         UnityEditor.AssetDatabase.SaveAssets();
+
+        return filePath;
     }
+#endif
 
     public static List<Vector3> EnumerateVertexPositionsFromQuadList(ref List<Quad> drawnQuads, bool includeDuplicates = false, System.Action<Vertex> enumerationCallback = null) {
         List<Vector3> vertexPositions = new List<Vector3>(drawnQuads.Count * 4);

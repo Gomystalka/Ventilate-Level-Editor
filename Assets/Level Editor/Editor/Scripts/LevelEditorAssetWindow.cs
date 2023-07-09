@@ -204,6 +204,8 @@ public class LevelEditorAssetWindow : ILevelEditorWindow
         if (!levelEditorAssetData)
         {
             Debug.LogError("Failed to load Editor Asset Data!", OwnerWindow);
+            LevelEditorMessageSystem.Push("Failed to load Editor Asset Data!", 2f,
+                LevelEditorMessageSystem.MessageType.Error);
             return;
         }
 
@@ -216,6 +218,8 @@ public class LevelEditorAssetWindow : ILevelEditorWindow
         else
         {
             Debug.LogError("Failed to load Editor Asset Data! Asset Data created is only valid for the project it was created with!", OwnerWindow);
+            LevelEditorMessageSystem.Push("Failed to load Editor Asset Data! Asset Data created is only valid for the project it was created with!", 2f,
+                LevelEditorMessageSystem.MessageType.Error);
             return;
         }
     }
@@ -279,7 +283,7 @@ public class LevelEditorAssetWindow : ILevelEditorWindow
 
     public void OnWindowOpened()
     {
-        Debug.Log("Opened Level Asset Window");
+        LevelEditorMessageSystem.Push("Opened Level Asset Editor", 1f, LevelEditorMessageSystem.MessageType.Info);
     }
 
     public void OnWindowClosed() {

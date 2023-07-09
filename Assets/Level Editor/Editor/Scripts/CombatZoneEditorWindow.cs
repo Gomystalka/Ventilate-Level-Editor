@@ -35,7 +35,7 @@ public class CombatZoneEditorWindow : ILevelEditorWindow
 
     public void OnWindowOpened()
     {
-        Debug.Log("Opened Combat Zone Editor");
+        LevelEditorMessageSystem.Push("Opened Combat Zone Editor", 1f, LevelEditorMessageSystem.MessageType.Info);
     }
 
     public void OnWindowClosed()
