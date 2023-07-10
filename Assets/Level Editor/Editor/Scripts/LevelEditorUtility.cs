@@ -28,6 +28,15 @@ public static class LevelEditorUtility
         return false;
     }
 
+    public static string GetLevelEditorResourcePath(LevelEditorWindow sourceWindow, params string[] additionalPaths) {
+        string loadPath = sourceWindow.GetScriptableObjectScriptPath();
+        loadPath = loadPath.Substring(0, loadPath.IndexOf("/Editor/") + 8);
+        return loadPath + "/" + System.IO.Path.Combine(additionalPaths);
+    }
+
+    public static T LoadResourceForWindowAtPath<T>(LevelEditorWindow sourceWindow, params string[] additionalPaths) where T : Object
+        =>  AssetDatabase.LoadAssetAtPath<T>(GetLevelEditorResourcePath(sourceWindow, additionalPaths));
+
     public static void IndentedFieldLayout(int indentLevel, System.Action drawAction) {
         GUILayout.BeginHorizontal();
         GUILayout.Space(indentLevel * kIndentSpacePixels);

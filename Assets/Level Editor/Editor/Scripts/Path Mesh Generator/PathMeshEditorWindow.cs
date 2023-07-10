@@ -8,7 +8,7 @@ public class PathMeshEditorWindow : ILevelEditorWindow
     public const string kDefaultCurrentSessionFileName = "CurrentMeshData";
     public const string kDefaultCurrentSessionFileExtension = ".poi";
 
-    private const string kPathMeshEditorGameObjectName = "SceneObject:PathMeshEditor";
+    private const string kPathMeshEditorGameObjectName = "PathMeshEditor";
 
     public string Title => "Path Mesh Editor";
 
@@ -165,22 +165,18 @@ public class PathMeshEditorWindow : ILevelEditorWindow
     }
 
     private void PerformSave() {
-        string savePath = OwnerWindow.GetScriptableObjectScriptPath();
+        string savePath 
+            = LevelEditorUtility.GetLevelEditorResourcePath(OwnerWindow, "Path Cache", kDefaultCurrentSessionFileName + kDefaultCurrentSessionFileExtension);
         if (string.IsNullOrEmpty(savePath)) return;
-
-        savePath = savePath.Substring(0, savePath.IndexOf("/Editor/") + 8);
-        savePath = System.IO.Path.Combine(savePath, "Path Cache", kDefaultCurrentSessionFileName + kDefaultCurrentSessionFileExtension);
         string content = _pathMeshCreatorSceneReference.SerializeCurrentQuadData();
 
         System.IO.File.WriteAllText(savePath, content);
     }
 
     private void PerformLoad() {
-        string loadPath = OwnerWindow.GetScriptableObjectScriptPath();
+        string loadPath 
+            = LevelEditorUtility.GetLevelEditorResourcePath(OwnerWindow, "Path Cache", kDefaultCurrentSessionFileName + kDefaultCurrentSessionFileExtension);
         if (string.IsNullOrEmpty(loadPath)) return;
-
-        loadPath = loadPath.Substring(0, loadPath.IndexOf("/Editor/") + 8);
-        loadPath = System.IO.Path.Combine(loadPath, "Path Cache", kDefaultCurrentSessionFileName + kDefaultCurrentSessionFileExtension);
 
         if (System.IO.File.Exists(loadPath))
         {
@@ -278,19 +274,11 @@ public class PathMeshEditorWindow : ILevelEditorWindow
         else
             return;//No need to create a new one if one already exists!
 
-        GameObject meshCreatorObject = UnityEditor.EditorUtility.CreateGameObjectWithHideFlags(kPathMeshEditorGameObjectName,
-            HideFlags.HideInHierarchy, typeof(PathMeshCreator));
-
-        _pathMeshCreatorSceneReference = meshCreatorObject.GetComponent<PathMeshCreator>();
-        _pathMeshCreatorSceneReference.drawMode = DrawMode.Quad;
-        _pathMeshCreatorSceneReference.quadColor = new Color(0.75f, 0.25f, 0.2f, 0.5f);
-
-        string loadPath = OwnerWindow.GetScriptableObjectScriptPath();
-        loadPath = loadPath.Substring(0, loadPath.IndexOf("/Editor/") + 8);
-        loadPath = System.IO.Path.Combine(loadPath, "Materials", "UnplacedEditorQuad.mat");
-
-        if (System.IO.File.Exists(loadPath))
-            _pathMeshCreatorSceneReference.unplacedMaterial = AssetDatabase.LoadAssetAtPath<Material>(FileUtil.GetProjectRelativePath(loadPath));
+        PathMeshCreator meshCreatorObjectPrefab 
+            = LevelEditorUtility.LoadResourceForWindowAtPath<PathMeshCreator>(OwnerWindow, "Prefabs", kPathMeshEditorGameObjectName + ".prefab");
+        _pathMeshCreatorSceneReference = Object.Instantiate(meshCreatorObjectPrefab, Vector3.zero, Quaternion.identity);
+        _pathMeshCreatorSceneReference.gameObject.name = kPathMeshEditorGameObjectName;
+        _pathMeshCreatorSceneReference.gameObject.hideFlags = HideFlags.HideInHierarchy;
     }
 
     private void SetPathMeshCreatorObjectVisibility(bool visible) {
