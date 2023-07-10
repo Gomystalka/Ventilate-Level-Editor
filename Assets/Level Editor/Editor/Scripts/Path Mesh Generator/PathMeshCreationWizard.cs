@@ -5,10 +5,19 @@ using UnityEditor;
 
 public class PathMeshCreationWizard : ScriptableWizard
 {
+    [Header("Settings")]
     [HideInInspector] [SerializeField] private string _meshName = "New Mesh";
     [SerializeField] private string _sceneObjectName = "Scene:New Mesh";
     [SerializeField] private Material _material;
     [SerializeField] private bool _saveToFile;
+    [SerializeField] private bool _createCollider;
+    [HideInInspector] [SerializeField] private bool _isConvex;
+    [HideInInspector] [SerializeField] private bool _isTrigger;
+
+    [Header("Transform")]
+    [HideInInspector] [SerializeField] private Vector3 _positionOffset;
+    [HideInInspector] [SerializeField] private Vector3 _rotation;
+    [HideInInspector] [SerializeField] private Vector3 _scale = Vector3.one;
 
     private static PathMeshCreator _pathMeshCreator;
 
@@ -31,6 +40,26 @@ public class PathMeshCreationWizard : ScriptableWizard
             _meshName = GUILayout.TextField(_meshName);
             GUILayout.EndHorizontal();
         }
+        if (_createCollider)
+        {
+            LevelEditorUtility.IndentedFieldLayout(1, () => {
+                _isConvex = GUILayout.Toggle(_isConvex, "Is Convex");
+            });
+
+            EditorGUI.BeginDisabledGroup(!_isConvex);
+            LevelEditorUtility.IndentedFieldLayout(1, () => {
+                _isTrigger = GUILayout.Toggle(_isTrigger, "Is Trigger");
+            });
+            EditorGUI.EndDisabledGroup();
+
+            if (!_isConvex)
+                _isTrigger = false;
+        }
+        GUILayout.BeginVertical(EditorStyles.helpBox);
+        _positionOffset = EditorGUILayout.Vector3Field("Position Offset", _positionOffset);
+        _rotation = EditorGUILayout.Vector3Field("Rotation", _rotation);
+        _scale = EditorGUILayout.Vector3Field("Scale", _scale);
+        GUILayout.EndVertical();
         GUILayout.EndVertical();
         return changeResult;
     }
@@ -42,13 +71,21 @@ public class PathMeshCreationWizard : ScriptableWizard
             _sceneObjectName = "New Mesh";
 
         GameObject meshObjectInScene = new GameObject(_sceneObjectName);
-        meshObjectInScene.transform.position = _pathMeshCreator.transform.position;
-        meshObjectInScene.transform.rotation = _pathMeshCreator.transform.rotation;
+        meshObjectInScene.transform.position = _pathMeshCreator.transform.position + _positionOffset;
+        meshObjectInScene.transform.rotation = Quaternion.Euler(_rotation);
+        meshObjectInScene.transform.localScale = _scale;
 
         Mesh mesh = LevelEditorMeshUtility.GenerateMeshFromQuadData(ref _pathMeshCreator.currentlyDrawnQuads);
+        mesh.name = _saveToFile ?  _meshName : _sceneObjectName;
         MeshFilter filter = meshObjectInScene.AddComponent<MeshFilter>();
         MeshRenderer renderer = meshObjectInScene.AddComponent<MeshRenderer>();
         GeneratedPathMesh pathMesh = meshObjectInScene.AddComponent<GeneratedPathMesh>();
+        if (_createCollider) {
+            MeshCollider collider = meshObjectInScene.AddComponent<MeshCollider>();
+            collider.sharedMesh = mesh;
+            collider.convex = _isConvex;
+            collider.isTrigger = _isTrigger;
+        }
 
         renderer.material = _material;
         filter.sharedMesh = mesh;

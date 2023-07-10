@@ -3,6 +3,8 @@ using UnityEditor;
 
 public static class LevelEditorUtility
 {
+    public const float kIndentSpacePixels = 20f;
+
     public static string GetScriptableObjectScriptPath(this ScriptableObject scriptableObject)
         => AssetDatabase.GetAssetPath(MonoScript.FromScriptableObject(scriptableObject));
 
@@ -24,5 +26,12 @@ public static class LevelEditorUtility
             return rect.Contains(Event.current.mousePosition) && additionalCondition;
 
         return false;
+    }
+
+    public static void IndentedFieldLayout(int indentLevel, System.Action drawAction) {
+        GUILayout.BeginHorizontal();
+        GUILayout.Space(indentLevel * kIndentSpacePixels);
+        drawAction?.Invoke();
+        GUILayout.EndHorizontal();
     }
 }

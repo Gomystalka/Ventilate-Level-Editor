@@ -23,6 +23,8 @@ public class PathMeshCreator : MonoBehaviour
     public List<Quad> currentlyDrawnQuads = new List<Quad>();
     public int QuadCount => currentlyDrawnQuads.Count;
 
+    [HideInInspector] public bool showMeshBuildingControls;
+
 #if !UNITY_EDITOR
     private void Awake()
     {
@@ -101,6 +103,7 @@ public class PathMeshCreator : MonoBehaviour
                 quad.GLDrawTriangles();
                 GL.End();
             }
+            if (!showMeshBuildingControls) continue;
 
             UnityEditor.Handles.color = Color.red;
             Vector3 normal = Vector3.zero;
@@ -114,8 +117,10 @@ public class PathMeshCreator : MonoBehaviour
                 //if (quad.DirectionLocks[index]) continue;
 
                 normal = quad.GetEdgeNormal(direction);
+                Quaternion lookRotation = normal.magnitude > Mathf.Epsilon ? Quaternion.LookRotation(normal) : Quaternion.identity;
+
                 if (UnityEditor.Handles.Button(quad.GetEdge(direction),
-                    Quaternion.LookRotation(normal), 0.05f, 0.05f, UnityEditor.Handles.DotHandleCap)) {
+                    lookRotation, 0.05f, 0.05f, UnityEditor.Handles.DotHandleCap)) {
                     Quad newQuad = GeneratePresetQuad(quad, direction);
                     //quad.DirectionLocks[index] = true;
 
@@ -213,7 +218,7 @@ public class PathMeshCreator : MonoBehaviour
         if (UnityEditor.Selection.objects[0] is GameObject go)
         {
             Vertex v = go.GetComponent<Vertex>();
-            if (!v) return;
+            if (!v || v.Owner == null) return;
 
             contentRect.y += 20f;
             contentRect.height = 20f;

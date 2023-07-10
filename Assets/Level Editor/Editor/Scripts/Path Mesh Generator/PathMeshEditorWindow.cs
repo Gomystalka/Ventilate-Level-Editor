@@ -24,6 +24,7 @@ public class PathMeshEditorWindow : ILevelEditorWindow
     public bool showVertexIndices = false;
     public bool saveOnWindowClose = true;
     public bool showDebugOptions = false;
+    public bool showMeshBuildingControls = true;
 
     public bool pathCreatorVisibility = false;
 
@@ -129,13 +130,16 @@ public class PathMeshEditorWindow : ILevelEditorWindow
                 autosaveIntervalSeconds = 2;
         }
         saveOnWindowClose = GUILayout.Toggle(saveOnWindowClose, "Save on Window Close");
+        showMeshBuildingControls = GUILayout.Toggle(showMeshBuildingControls, "Show Mesh Creation Controls");
+        _pathMeshCreatorSceneReference.showMeshBuildingControls = showMeshBuildingControls;
 
         if (showDebugOptions = GUILayout.Toggle(showDebugOptions, "Show Debug Options"))
         {
             EditorGUI.BeginChangeCheck();
-            GUILayout.BeginHorizontal();
-            GUILayout.Space(20f);
-            showVertexIndices = GUILayout.Toggle(showVertexIndices, "Show Vertex Indices");
+
+            LevelEditorUtility.IndentedFieldLayout(1, () => {
+                showVertexIndices = GUILayout.Toggle(showVertexIndices, "Show Vertex Indices");
+            });
             if (EditorGUI.EndChangeCheck())
             {
                 foreach (Quad q in _pathMeshCreatorSceneReference.currentlyDrawnQuads)
@@ -148,14 +152,13 @@ public class PathMeshEditorWindow : ILevelEditorWindow
                     }
                 }
             }
-            GUILayout.EndHorizontal();
+
             EditorGUI.BeginChangeCheck();
-            GUILayout.BeginHorizontal();
-            GUILayout.Space(20f);
-            pathCreatorVisibility = GUILayout.Toggle(pathCreatorVisibility, "Show Path Creator Object in Hierarchy");
+            LevelEditorUtility.IndentedFieldLayout(1, () => {
+                pathCreatorVisibility = GUILayout.Toggle(pathCreatorVisibility, "Show Path Creator Object in Hierarchy");
+            });
             if (EditorGUI.EndChangeCheck())
                 SetPathMeshCreatorObjectVIsibilityInHierarchy(pathCreatorVisibility);
-            GUILayout.EndHorizontal();
         }
         GUILayout.EndVertical();
         GUILayout.EndHorizontal();
