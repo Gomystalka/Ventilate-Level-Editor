@@ -19,6 +19,7 @@ public class CombatAreaEditorWindow : ILevelEditorWindow
 
     private Texture _vertexIconTexture;
     [SerializeField] private bool _useDirectionBetweenTwoPointsForNormal = true;
+    [SerializeField] private bool _showRendererBounds = true;
 
     public GUIContent GetTitleContent()
     {
@@ -49,6 +50,7 @@ public class CombatAreaEditorWindow : ILevelEditorWindow
         }
         GUILayout.BeginVertical("Settings", GUI.skin.window);
         _useDirectionBetweenTwoPointsForNormal = GUILayout.Toggle(_useDirectionBetweenTwoPointsForNormal, "Use Direction Vector for Normal");
+        _showRendererBounds = GUILayout.Toggle(_showRendererBounds, "Show Renderer Bounds");
         GUILayout.EndVertical();
     }
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [ExecuteInEditMode]
-[RequireComponent(typeof(LineRenderer))]
+[RequireComponent(typeof(LineRenderer), typeof(BoxCollider))]
 public class CombatAreaCreator : MonoBehaviour
 {
     //TO-DO
@@ -19,6 +19,7 @@ public class CombatAreaCreator : MonoBehaviour
     public static Texture vertexIconTexture;
 
     private LineRenderer _combatAreaLineRenderer;
+    private BoxCollider _collider;
     public Transform SourceTransform { get; set; }
 
     /*[HideInInspector] */[SerializeField] private List<Transform> _vertices;
@@ -27,6 +28,7 @@ public class CombatAreaCreator : MonoBehaviour
     private void OnEnable()
     {
         _combatAreaLineRenderer = GetComponent<LineRenderer>();
+        _collider = GetComponent<BoxCollider>();
 
 #if UNITY_EDITOR
         if (!Application.isPlaying)
@@ -55,6 +57,7 @@ public class CombatAreaCreator : MonoBehaviour
             _combatAreaLineRenderer.positionCount = 0;
 
         SetPositions();
+        SetColliderBounds();
     }
 
     public GameObject CreateNewPosition(Vector3 position) {
@@ -76,6 +79,13 @@ public class CombatAreaCreator : MonoBehaviour
 
         for (int p = 0; p < _vertices.Count; ++p)
             _combatAreaLineRenderer.SetPosition(p, _vertices[p].transform.position);
+    }
+
+    private void SetColliderBounds() {
+        Vector3 size = _combatAreaLineRenderer.bounds.size;
+        size.y = 0.1f;
+        _collider.size = size;
+        _collider.center = _combatAreaLineRenderer.bounds.center;
     }
 
     private void DetectDeletedVertices() {
@@ -100,6 +110,9 @@ public class CombatAreaCreator : MonoBehaviour
         if (currentScene)
             currentScene.Repaint();
 #endif
+
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireCube(_combatAreaLineRenderer.bounds.center, _combatAreaLineRenderer.bounds.size);
     }
 
 #if UNITY_EDITOR
@@ -121,6 +134,58 @@ public class CombatAreaCreator : MonoBehaviour
             GameObject vertex = CreateNewPosition(frontVertexPosition + normal);
             if(vertexIconTexture)
                 UnityEditor.EditorGUIUtility.SetIconForObject(vertex, vertexIconTexture as Texture2D);
+        }
+        OnHoverInScene();
+    }
+
+    int closestVertexindex = -1;
+    float closestDistance = float.MaxValue;
+
+    private void OnHoverInScene() {
+        Ray worldRay = UnityEditor.HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
+
+        if (Physics.Raycast(worldRay, out RaycastHit hit, Mathf.Infinity, 1 << 5, QueryTriggerInteraction.Collide)) {
+            if (hit.transform == transform) {
+                Vector3 hitPosition2D = hit.point;
+                hitPosition2D.y = 0f; //Perform the test on a 2D plane.
+
+                for(int v = 1; v < _vertices.Count; ++v) {
+                    Vector3 current = _vertices[v].position;
+                    Vector3 previous = _vertices[v - 1].position;
+                    current.y = 0f;
+                    previous.y = 0f;
+
+                    //if (Physics.CheckBox(previous, Vector3.one * 0.1f))
+                    //{
+                    //    closestVertexindex = v - 1;
+                    //    break;
+                    //}
+                    closestVertexindex = 0;
+                    closestDistance = float.MaxValue;
+
+                    float dist = Vector3.Distance(previous, hitPosition2D);
+                    if (dist < closestDistance)
+                    {
+                        //if (closestVertexindex == v + 1)
+                        //    break;
+
+                        closestDistance = dist;
+                        closestVertexindex = v - 1;
+                    }
+                }
+
+                if (closestVertexindex != -1)
+                {
+                    Vector3 current = _vertices[closestVertexindex].position;
+                    current.y = 0f;
+                    Vector3 next = _vertices[closestVertexindex + 1].position;
+                    next.y = 0f;
+
+                    Vector3 mainPosition = Vector3.Lerp(current, next, (current - hitPosition2D).magnitude / (next - current).magnitude);
+                    UnityEditor.Handles.color = Color.cyan;
+                    UnityEditor.Handles.DrawWireCube(mainPosition, Vector3.one * 0.5f);
+                }
+            }
         }
     }
 #endif

@@ -43,7 +43,8 @@ GameObject:
   - component: {fileID: 4297275583379779433}
   - component: {fileID: 1999478788687353915}
   - component: {fileID: 8919069352176007844}
-  m_Layer: 0
+  - component: {fileID: 4208426551933668463}
+  m_Layer: 5
   m_Name: FullArea
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -115,7 +116,7 @@ LineRenderer:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 1
+        value: 0.3108101
         inSlope: 0
         outSlope: 0
         tangentMode: 0
@@ -174,3 +175,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 623e13d5e872d284e8c2a350329079ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _vertices: []
+--- !u!65 &4208426551933668463
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5771450068616921113}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0, y: 0.1, z: 0}
+  m_Center: {x: -1.8744326, y: 2.6625953, z: -3.94003}
