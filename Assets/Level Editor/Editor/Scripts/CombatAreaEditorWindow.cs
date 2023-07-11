@@ -18,8 +18,8 @@ public class CombatAreaEditorWindow : ILevelEditorWindow
     private static CombatAreaCreator _combatAreaCreatorSceneReference;
 
     private Texture _vertexIconTexture;
-    [SerializeField] private bool _useDirectionBetweenTwoPointsForNormal = true;
-    [SerializeField] private bool _showRendererBounds = true;
+
+    [SerializeField] private bool _showDebugOptions;
 
     public GUIContent GetTitleContent()
     {
@@ -40,6 +40,8 @@ public class CombatAreaEditorWindow : ILevelEditorWindow
             return;
         }
 
+        bool sourcePointPresent = _combatAreaCreatorSceneReference.VertexCount != 0;
+        EditorGUI.BeginDisabledGroup(sourcePointPresent);
         if (GUILayout.Button("Create Source Point")) {
             GameObject vertex = _combatAreaCreatorSceneReference.CreateNewPosition(_combatAreaCreatorSceneReference.transform.position);
             if(!_vertexIconTexture)
@@ -47,15 +49,79 @@ public class CombatAreaEditorWindow : ILevelEditorWindow
             CombatAreaCreator.vertexIconTexture = _vertexIconTexture;
 
             EditorGUIUtility.SetIconForObject(vertex, _vertexIconTexture as Texture2D);
+            LevelEditorMessageSystem.Push("Source Vertex Generated", 2f, LevelEditorMessageSystem.MessageType.Info);
         }
-        GUILayout.BeginVertical("Settings", GUI.skin.window);
-        _useDirectionBetweenTwoPointsForNormal = GUILayout.Toggle(_useDirectionBetweenTwoPointsForNormal, "Use Direction Vector for Normal");
-        _showRendererBounds = GUILayout.Toggle(_showRendererBounds, "Show Renderer Bounds");
+        EditorGUI.EndDisabledGroup();
+        if (sourcePointPresent)
+        {
+            if (GUILayout.Button("Clear All Vertices")) {
+                bool response = EditorUtility.DisplayDialog("Vertex Clear", "Are you sure that you'd like to remove all vertices in the current combat zone?\n" +
+                    "This action cannot be undone!\n" +
+                    $"Vertex Count in Scene: {_combatAreaCreatorSceneReference.VertexCount}", "Yes", "No");
+                if (response)
+                {
+                    _combatAreaCreatorSceneReference.Clear();
+                    LevelEditorMessageSystem.Push("All Vertices Cleared", 2f, LevelEditorMessageSystem.MessageType.Warning);
+                }
+            }
+        }
+
+        float panelWidth = OwnerWindow.Size.x / 2f;
+        GUILayout.BeginHorizontal("Combat Bounds", GUI.skin.window);
+        GUILayout.BeginVertical("Settings", GUI.skin.window, GUILayout.ExpandWidth(false), GUILayout.Width(panelWidth));
+        _combatAreaCreatorSceneReference.lineSegmentLength = EditorGUILayout.FloatField("Line Segment Length", _combatAreaCreatorSceneReference.lineSegmentLength);
+        _combatAreaCreatorSceneReference.useDirectionVectorForNormal = GUILayout.Toggle(_combatAreaCreatorSceneReference.useDirectionVectorForNormal, "Use Direction Vector for Normal");
+        _showDebugOptions = GUILayout.Toggle(_showDebugOptions, "Show Debug Options");
+        if (_showDebugOptions)
+        {
+            LevelEditorUtility.IndentedFieldLayout(1, () => {
+                GUILayout.BeginVertical();
+                _combatAreaCreatorSceneReference.showRendererBounds = GUILayout.Toggle(_combatAreaCreatorSceneReference.showRendererBounds, "Show Renderer Bounds");
+                _combatAreaCreatorSceneReference.showMidpointAtLineSegmentDuringEditMode = GUILayout.Toggle(_combatAreaCreatorSceneReference.showMidpointAtLineSegmentDuringEditMode, "Show Mid-Point At Line Segment During Edit Mode");
+                GUILayout.EndVertical();
+            });
+        }
+            //GUILayout
         GUILayout.EndVertical();
+        GUILayout.BeginVertical("Vertex Manipulation", GUI.skin.window, GUILayout.ExpandWidth(false), GUILayout.Width(panelWidth));
+
+        if (_combatAreaCreatorSceneReference.EditMode == CombatAreaEditMode.None)
+        {
+            if (GUILayout.Button("Add Vertex"))
+                _combatAreaCreatorSceneReference.EditMode = CombatAreaEditMode.VertexAdd;
+
+            EditorGUI.BeginDisabledGroup(_combatAreaCreatorSceneReference.VertexCount <= 2);
+            if (!_combatAreaCreatorSceneReference.IsLoopConnected)
+            {
+                if (GUILayout.Button("Finalise Area"))
+                    _combatAreaCreatorSceneReference.ConnectLoop();
+            }
+            else
+                if (GUILayout.Button("Disconnect Area Loop"))
+                    _combatAreaCreatorSceneReference.DisconnectLoop();
+
+            EditorGUI.EndDisabledGroup();
+        }
+        else
+            if (GUILayout.Button("Exit Vertex Edit Mode"))
+            _combatAreaCreatorSceneReference.EditMode = CombatAreaEditMode.None;
+        GUILayout.Label($"Status: {GetAreaStatusString()}");
+        GUILayout.EndVertical();
+        GUILayout.EndHorizontal();
+    }
+
+    private string GetAreaStatusString() {
+        if (_combatAreaCreatorSceneReference.IsLoopConnected)
+            return "Finalised";
+        else if (_combatAreaCreatorSceneReference.EditMode == CombatAreaEditMode.VertexAdd)
+            return "Adding Vertices";
+        else
+            return "Building Area";
     }
 
     public void OnDestroy()
     {
+        OnWindowClosed();
     }
 
     public void OnDisable()
@@ -66,12 +132,13 @@ public class CombatAreaEditorWindow : ILevelEditorWindow
     {
         _vertexIconTexture = LevelEditorUtility.LoadResourceForWindowAtPath<Texture>(OwnerWindow, "Sprites", "VertexIcon.png");
         CombatAreaCreator.vertexIconTexture = _vertexIconTexture;
+        OnWindowOpened();
     }
 
     public void OnWindowOpened()
     {
-        if (!_combatAreaCreatorSceneReference)
-            CreateOrFindCombatAreaCreatorInScene();
+        //if (!_combatAreaCreatorSceneReference)
+        //    CreateCombatAreaEditor();
 
         SetCombatAreaCreatorVisibility(true);
 
@@ -83,16 +150,16 @@ public class CombatAreaEditorWindow : ILevelEditorWindow
         SetCombatAreaCreatorVisibility(false);
     }
 
-    private void CreateOrFindCombatAreaCreatorInScene()
+    private void CreateCombatAreaEditor()
     {
-        if (!_combatAreaCreatorSceneReference)
-        {
+        //if (!_combatAreaCreatorSceneReference)
+        //{
 
-            if (_combatAreaCreatorSceneReference = Object.FindObjectOfType<CombatAreaCreator>(true)) //Assign find result to the static reference variable.
-                return; //No need to create a new one if one already exists!
-        }
-        else
-            return;//No need to create a new one if one already exists!
+        //    if (_combatAreaCreatorSceneReference = Object.FindObjectOfType<CombatAreaCreator>(true)) //Assign find result to the static reference variable.
+        //        return; //No need to create a new one if one already exists!
+        //}
+        //else
+        //    return;//No need to create a new one if one already exists!
 
         GameObject combatZoneEditorPrefab 
             = LevelEditorUtility.LoadResourceForWindowAtPath<GameObject>(OwnerWindow, "Prefabs", kCombatZoneEditorGameObjectName + ".prefab");

@@ -252,7 +252,7 @@ public class PathMeshEditorWindow : ILevelEditorWindow
     public void OnWindowClosed()
     {
         SetPathMeshCreatorObjectVisibility(false);
-        if (saveOnWindowClose)
+        if (saveOnWindowClose && _pathMeshCreatorSceneReference)
         {
             if (_pathMeshCreatorSceneReference.QuadCount != 0 && !EditorApplication.isPlaying)
             {
@@ -260,7 +260,6 @@ public class PathMeshEditorWindow : ILevelEditorWindow
                 LevelEditorMessageSystem.Push("Window Close Save Completed.", 1f, LevelEditorMessageSystem.MessageType.Info);
             }
         }
-
         EditorApplication.update -= UpdateAutosave;
     }
 

@@ -55,8 +55,13 @@ public class LevelEditorWindow : EditorWindow
         if (_editorWindows.Count == 0)
             FindAllEditorWindows();
 
-        foreach (ILevelEditorWindow editorWindow in _editorWindows)
-            editorWindow.OnEnable();
+        for (int i = 0; i < _editorWindows.Count; ++i)
+        {
+            if (currentEditorWindowIndex == i)
+                _editorWindows[i].OnEnable();
+            else
+                _editorWindows[i].OnDisable();
+        }
 
         _messageSystem.OnEnable();
     }

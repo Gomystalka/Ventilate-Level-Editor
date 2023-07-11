@@ -30,6 +30,7 @@ public static class LevelEditorUtility
 
     public static string GetLevelEditorResourcePath(LevelEditorWindow sourceWindow, params string[] additionalPaths) {
         string loadPath = sourceWindow.GetScriptableObjectScriptPath();
+        if (string.IsNullOrEmpty(loadPath)) return "";
         loadPath = loadPath.Substring(0, loadPath.IndexOf("/Editor/") + 8);
         return loadPath + "/" + System.IO.Path.Combine(additionalPaths);
     }
