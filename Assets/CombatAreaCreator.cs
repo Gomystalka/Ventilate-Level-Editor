@@ -15,8 +15,11 @@ public class CombatAreaCreator : MonoBehaviour
     // -Add Enemy display UI in scene view above the area. -WIP
     // -Add line segment overlap detection? (Maybe)
     // -Make all object names unique.
+    // -Add hide flag for display UI.
+    // -Add height value for display UI.
 
     public static Texture vertexIconTexture;
+    public static CombatAreaCreator CurrentCombatAreaCreator { get; set; } = null;
 
     private LineRenderer _combatAreaLineRenderer;
     private BoxCollider _collider;
@@ -49,8 +52,8 @@ public class CombatAreaCreator : MonoBehaviour
 #if UNITY_EDITOR
         if (!Application.isPlaying)
         {
-            UnityEditor.SceneView.duringSceneGui -= DrawHandles;
-            UnityEditor.SceneView.duringSceneGui += DrawHandles;
+            UnityEditor.SceneView.duringSceneGui -= OnSceneGUI;
+            UnityEditor.SceneView.duringSceneGui += OnSceneGUI;
         }
 #endif
     }
@@ -58,7 +61,7 @@ public class CombatAreaCreator : MonoBehaviour
     private void OnDisable()
     {
 #if UNITY_EDITOR
-        UnityEditor.SceneView.duringSceneGui -= DrawHandles;
+        UnityEditor.SceneView.duringSceneGui -= OnSceneGUI;
 #endif
     }
 
@@ -156,7 +159,7 @@ public class CombatAreaCreator : MonoBehaviour
     {
         if (Application.isPlaying) return;
 
-#if UNITY_EDITOR
+#if UNITY_EDITOR //This is a hack to keep the update loop running without focus.
         UnityEditor.EditorApplication.QueuePlayerLoopUpdate();
         UnityEditor.SceneView currentScene = UnityEditor.SceneView.currentDrawingSceneView;
         if (currentScene)
@@ -174,9 +177,9 @@ public class CombatAreaCreator : MonoBehaviour
     }
 
 #if UNITY_EDITOR
-    private void DrawHandles(UnityEditor.SceneView sceneView) {
+    private void OnSceneGUI(UnityEditor.SceneView sceneView) {
         if (sceneView.camera && _detailCanvas) {
-            _detailCanvas.transform.position = _combatAreaLineRenderer.bounds.center + Vector3.up * 2f;
+            _detailCanvas.transform.position = _combatAreaLineRenderer.bounds.center + Vector3.up * 4f;
             _detailCanvas.transform.LookAt(sceneView.camera.transform);
             _detailCanvas.transform.Rotate(0f, 180f, 0f);
         }
