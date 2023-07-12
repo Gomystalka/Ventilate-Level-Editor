@@ -1,0 +1,664 @@
+{
+    "isInLocalView": false,
+    "drawMode": 0,
+    "unplacedMaterialPath": "Assets/Level Editor/Editor/Materials/UnplacedEditorQuad.mat",
+    "quadSizeUnits": 2.0,
+    "quadColor": {
+        "r": 0.3820754885673523,
+        "g": 0.8784496188163757,
+        "b": 1.0,
+        "a": 1.0
+    },
+    "vertexData": [
+        {
+            "position": {
+                "x": 0.0,
+                "y": -0.020999999716877939,
+                "z": 0.0
+            },
+            "index": 0,
+            "uniqueIndex": 0,
+            "quadOwnerIndex": 0,
+            "connections": [
+                {
+                    "quadIndex": 0,
+                    "vertexIndex": 0
+                },
+                {
+                    "quadIndex": 1,
+                    "vertexIndex": 1
+                },
+                {
+                    "quadIndex": 3,
+                    "vertexIndex": 3
+                }
+            ]
+        },
+        {
+            "position": {
+                "x": 0.0,
+                "y": -0.020999999716877939,
+                "z": 2.0
+            },
+            "index": 1,
+            "uniqueIndex": 1,
+            "quadOwnerIndex": 0,
+            "connections": [
+                {
+                    "quadIndex": 0,
+                    "vertexIndex": 1
+                },
+                {
+                    "quadIndex": 2,
+                    "vertexIndex": 0
+                },
+                {
+                    "quadIndex": 3,
+                    "vertexIndex": 2
+                }
+            ]
+        },
+        {
+            "position": {
+                "x": 2.0,
+                "y": -0.020999999716877939,
+                "z": 2.0
+            },
+            "index": 2,
+            "uniqueIndex": 2,
+            "quadOwnerIndex": 0,
+            "connections": [
+                {
+                    "quadIndex": 0,
+                    "vertexIndex": 2
+                },
+                {
+                    "quadIndex": 2,
+                    "vertexIndex": 3
+                },
+                {
+                    "quadIndex": 4,
+                    "vertexIndex": 1
+                }
+            ]
+        },
+        {
+            "position": {
+                "x": 2.0,
+                "y": -0.020999999716877939,
+                "z": 0.0
+            },
+            "index": 3,
+            "uniqueIndex": 3,
+            "quadOwnerIndex": 0,
+            "connections": [
+                {
+                    "quadIndex": 0,
+                    "vertexIndex": 3
+                },
+                {
+                    "quadIndex": 1,
+                    "vertexIndex": 2
+                },
+                {
+                    "quadIndex": 4,
+                    "vertexIndex": 0
+                }
+            ]
+        },
+        {
+            "position": {
+                "x": 0.0,
+                "y": -0.020999999716877939,
+                "z": -2.0
+            },
+            "index": 0,
+            "uniqueIndex": 4,
+            "quadOwnerIndex": 1,
+            "connections": [
+                {
+                    "quadIndex": 1,
+                    "vertexIndex": 0
+                }
+            ]
+        },
+        {
+            "position": {
+                "x": 1.8839999437332154,
+                "y": -0.020999999716877939,
+                "z": -3.006999969482422
+            },
+            "index": 3,
+            "uniqueIndex": 5,
+            "quadOwnerIndex": 1,
+            "connections": [
+                {
+                    "quadIndex": 1,
+                    "vertexIndex": 3
+                }
+            ]
+        },
+        {
+            "position": {
+                "x": 0.0,
+                "y": -0.020999999716877939,
+                "z": 4.0
+            },
+            "index": 1,
+            "uniqueIndex": 6,
+            "quadOwnerIndex": 2,
+            "connections": [
+                {
+                    "quadIndex": 2,
+                    "vertexIndex": 1
+                }
+            ]
+        },
+        {
+            "position": {
+                "x": 2.0,
+                "y": -0.020999999716877939,
+                "z": 4.0
+            },
+            "index": 2,
+            "uniqueIndex": 7,
+            "quadOwnerIndex": 2,
+            "connections": [
+                {
+                    "quadIndex": 2,
+                    "vertexIndex": 2
+                }
+            ]
+        },
+        {
+            "position": {
+                "x": -2.0,
+                "y": -0.020999999716877939,
+                "z": 0.0
+            },
+            "index": 0,
+            "uniqueIndex": 8,
+            "quadOwnerIndex": 3,
+            "connections": [
+                {
+                    "quadIndex": 3,
+                    "vertexIndex": 0
+                }
+            ]
+        },
+        {
+            "position": {
+                "x": -2.0,
+                "y": -0.020999999716877939,
+                "z": 2.0
+            },
+            "index": 1,
+            "uniqueIndex": 9,
+            "quadOwnerIndex": 3,
+            "connections": [
+                {
+                    "quadIndex": 3,
+                    "vertexIndex": 1
+                }
+            ]
+        },
+        {
+            "position": {
+                "x": 3.240000009536743,
+                "y": -0.020999999716877939,
+                "z": 1.7300000190734864
+            },
+            "index": 2,
+            "uniqueIndex": 10,
+            "quadOwnerIndex": 4,
+            "connections": [
+                {
+                    "quadIndex": 4,
+                    "vertexIndex": 2
+                },
+                {
+                    "quadIndex": 5,
+                    "vertexIndex": 0
+                },
+                {
+                    "quadIndex": 12,
+                    "vertexIndex": 1
+                }
+            ]
+        },
+        {
+            "position": {
+                "x": 4.336999893188477,
+                "y": -0.020999999716877939,
+                "z": 0.13099999725818635
+            },
+            "index": 0,
+            "uniqueIndex": 11,
+            "quadOwnerIndex": 12,
+            "connections": [
+                {
+                    "quadIndex": 12,
+                    "vertexIndex": 0
+                },
+                {
+                    "quadIndex": 4,
+                    "vertexIndex": 3
+                }
+            ]
+        },
+        {
+            "position": {
+                "x": 4.0,
+                "y": -0.020999999716877939,
+                "z": 4.0
+            },
+            "index": 1,
+            "uniqueIndex": 12,
+            "quadOwnerIndex": 5,
+            "connections": [
+                {
+                    "quadIndex": 5,
+                    "vertexIndex": 1
+                },
+                {
+                    "quadIndex": 6,
+                    "vertexIndex": 0
+                }
+            ]
+        },
+        {
+            "position": {
+                "x": 6.0,
+                "y": -0.020999999716877939,
+                "z": 4.0
+            },
+            "index": 2,
+            "uniqueIndex": 13,
+            "quadOwnerIndex": 5,
+            "connections": [
+                {
+                    "quadIndex": 5,
+                    "vertexIndex": 2
+                },
+                {
+                    "quadIndex": 6,
+                    "vertexIndex": 3
+                }
+            ]
+        },
+        {
+            "position": {
+                "x": 7.75,
+                "y": -0.020999999716877939,
+                "z": 1.9199999570846558
+            },
+            "index": 2,
+            "uniqueIndex": 14,
+            "quadOwnerIndex": 5,
+            "connections": [
+                {
+                    "quadIndex": 5,
+                    "vertexIndex": 3
+                },
+                {
+                    "quadIndex": 12,
+                    "vertexIndex": 2
+                }
+            ]
+        },
+        {
+            "position": {
+                "x": 4.0,
+                "y": -0.020999999716877939,
+                "z": 6.0
+            },
+            "index": 1,
+            "uniqueIndex": 15,
+            "quadOwnerIndex": 6,
+            "connections": [
+                {
+                    "quadIndex": 6,
+                    "vertexIndex": 1
+                },
+                {
+                    "quadIndex": 7,
+                    "vertexIndex": 0
+                }
+            ]
+        },
+        {
+            "position": {
+                "x": 7.909999847412109,
+                "y": -0.020999999716877939,
+                "z": 5.639999866485596
+            },
+            "index": 2,
+            "uniqueIndex": 16,
+            "quadOwnerIndex": 6,
+            "connections": [
+                {
+                    "quadIndex": 6,
+                    "vertexIndex": 2
+                },
+                {
+                    "quadIndex": 7,
+                    "vertexIndex": 3
+                }
+            ]
+        },
+        {
+            "position": {
+                "x": 4.0,
+                "y": -0.020999999716877939,
+                "z": 8.0
+            },
+            "index": 1,
+            "uniqueIndex": 17,
+            "quadOwnerIndex": 7,
+            "connections": [
+                {
+                    "quadIndex": 7,
+                    "vertexIndex": 1
+                },
+                {
+                    "quadIndex": 8,
+                    "vertexIndex": 0
+                }
+            ]
+        },
+        {
+            "position": {
+                "x": 6.0,
+                "y": -0.020999999716877939,
+                "z": 8.0
+            },
+            "index": 2,
+            "uniqueIndex": 18,
+            "quadOwnerIndex": 7,
+            "connections": [
+                {
+                    "quadIndex": 7,
+                    "vertexIndex": 2
+                },
+                {
+                    "quadIndex": 8,
+                    "vertexIndex": 3
+                }
+            ]
+        },
+        {
+            "position": {
+                "x": 4.0,
+                "y": -0.020999999716877939,
+                "z": 10.0
+            },
+            "index": 1,
+            "uniqueIndex": 19,
+            "quadOwnerIndex": 8,
+            "connections": [
+                {
+                    "quadIndex": 8,
+                    "vertexIndex": 1
+                },
+                {
+                    "quadIndex": 9,
+                    "vertexIndex": 0
+                },
+                {
+                    "quadIndex": 10,
+                    "vertexIndex": 3
+                }
+            ]
+        },
+        {
+            "position": {
+                "x": 6.0,
+                "y": -0.020999999716877939,
+                "z": 10.0
+            },
+            "index": 2,
+            "uniqueIndex": 20,
+            "quadOwnerIndex": 8,
+            "connections": [
+                {
+                    "quadIndex": 8,
+                    "vertexIndex": 2
+                },
+                {
+                    "quadIndex": 9,
+                    "vertexIndex": 3
+                }
+            ]
+        },
+        {
+            "position": {
+                "x": 4.0,
+                "y": -0.020999999716877939,
+                "z": 12.0
+            },
+            "index": 1,
+            "uniqueIndex": 21,
+            "quadOwnerIndex": 9,
+            "connections": [
+                {
+                    "quadIndex": 9,
+                    "vertexIndex": 1
+                },
+                {
+                    "quadIndex": 10,
+                    "vertexIndex": 2
+                }
+            ]
+        },
+        {
+            "position": {
+                "x": 6.0,
+                "y": -0.020999999716877939,
+                "z": 12.0
+            },
+            "index": 2,
+            "uniqueIndex": 22,
+            "quadOwnerIndex": 9,
+            "connections": [
+                {
+                    "quadIndex": 9,
+                    "vertexIndex": 2
+                }
+            ]
+        },
+        {
+            "position": {
+                "x": 2.0,
+                "y": -0.020999999716877939,
+                "z": 10.0
+            },
+            "index": 0,
+            "uniqueIndex": 23,
+            "quadOwnerIndex": 10,
+            "connections": [
+                {
+                    "quadIndex": 10,
+                    "vertexIndex": 0
+                },
+                {
+                    "quadIndex": 11,
+                    "vertexIndex": 3
+                }
+            ]
+        },
+        {
+            "position": {
+                "x": 2.0,
+                "y": -0.020999999716877939,
+                "z": 12.0
+            },
+            "index": 1,
+            "uniqueIndex": 24,
+            "quadOwnerIndex": 10,
+            "connections": [
+                {
+                    "quadIndex": 10,
+                    "vertexIndex": 1
+                },
+                {
+                    "quadIndex": 11,
+                    "vertexIndex": 2
+                }
+            ]
+        },
+        {
+            "position": {
+                "x": 0.0,
+                "y": -0.020999999716877939,
+                "z": 10.0
+            },
+            "index": 0,
+            "uniqueIndex": 25,
+            "quadOwnerIndex": 11,
+            "connections": [
+                {
+                    "quadIndex": 11,
+                    "vertexIndex": 0
+                }
+            ]
+        },
+        {
+            "position": {
+                "x": 0.0,
+                "y": -0.020999999716877939,
+                "z": 12.0
+            },
+            "index": 1,
+            "uniqueIndex": 26,
+            "quadOwnerIndex": 11,
+            "connections": [
+                {
+                    "quadIndex": 11,
+                    "vertexIndex": 1
+                }
+            ]
+        },
+        {
+            "position": {
+                "x": 7.8341827392578129,
+                "y": -0.020999999716877939,
+                "z": -0.07822751998901367
+            },
+            "index": 3,
+            "uniqueIndex": 27,
+            "quadOwnerIndex": 12,
+            "connections": [
+                {
+                    "quadIndex": 12,
+                    "vertexIndex": 3
+                }
+            ]
+        }
+    ],
+    "quadData": [
+        {
+            "vertexIndices": [
+                0,
+                1,
+                2,
+                3
+            ]
+        },
+        {
+            "vertexIndices": [
+                4,
+                0,
+                3,
+                5
+            ]
+        },
+        {
+            "vertexIndices": [
+                1,
+                6,
+                7,
+                2
+            ]
+        },
+        {
+            "vertexIndices": [
+                8,
+                9,
+                1,
+                0
+            ]
+        },
+        {
+            "vertexIndices": [
+                3,
+                2,
+                10,
+                11
+            ]
+        },
+        {
+            "vertexIndices": [
+                10,
+                12,
+                13,
+                14
+            ]
+        },
+        {
+            "vertexIndices": [
+                12,
+                15,
+                16,
+                13
+            ]
+        },
+        {
+            "vertexIndices": [
+                15,
+                17,
+                18,
+                16
+            ]
+        },
+        {
+            "vertexIndices": [
+                17,
+                19,
+                20,
+                18
+            ]
+        },
+        {
+            "vertexIndices": [
+                19,
+                21,
+                22,
+                20
+            ]
+        },
+        {
+            "vertexIndices": [
+                23,
+                24,
+                21,
+                19
+            ]
+        },
+        {
+            "vertexIndices": [
+                25,
+                26,
+                24,
+                23
+            ]
+        },
+        {
+            "vertexIndices": [
+                11,
+                10,
+                14,
+                27
+            ]
+        }
+    ]
+}

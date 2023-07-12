@@ -26,21 +26,22 @@ public class CombatAreaEditorWindow : ILevelEditorWindow
 
     public void OnGUI()
     {
+        CheckForSelectionChange();
+
         if (EditorApplication.isPlaying)
         {
             EditorGUILayout.HelpBox("The Combat Area Editor is only available outside of play mode!", MessageType.Warning, true);
             return;
         }
 
+        EditorStyles.boldLabel.richText = true;
+        TextAnchor lastAlignment = EditorStyles.boldLabel.alignment;
+        EditorStyles.boldLabel.alignment = TextAnchor.MiddleCenter;
         if (!CombatAreaCreator.CurrentCombatAreaCreator)
         {
-            EditorStyles.boldLabel.richText = true;
-            TextAnchor lastAlignment = EditorStyles.boldLabel.alignment;
-            EditorStyles.boldLabel.alignment = TextAnchor.MiddleCenter;
+
             GUILayout.Label("<size=21>No Combat Area Creator Selected.</size>\n" +
                             "<size=16>Please select one in the scene or create one below!</size>", EditorStyles.boldLabel);
-            EditorStyles.boldLabel.richText = false;
-            EditorStyles.boldLabel.alignment = lastAlignment;
 
             GUI.skin.button.richText = true;
             float buttonWidth = 200f;
@@ -50,8 +51,15 @@ public class CombatAreaEditorWindow : ILevelEditorWindow
                 CreateCombatAreaEditor();
             GUILayout.EndHorizontal();
             GUI.skin.button.richText = false;
+
+            EditorStyles.boldLabel.richText = false;
+            EditorStyles.boldLabel.alignment = lastAlignment;
             return;
         }
+        GUILayout.Label($"<size=24>{CombatAreaCreator.CurrentCombatAreaCreator.transform.root.gameObject.name}</size>", EditorStyles.boldLabel);
+
+        EditorStyles.boldLabel.richText = false;
+        EditorStyles.boldLabel.alignment = lastAlignment;
 
         bool sourcePointPresent = CombatAreaCreator.CurrentCombatAreaCreator.VertexCount != 0;
         EditorGUI.BeginDisabledGroup(sourcePointPresent);
@@ -84,6 +92,14 @@ public class CombatAreaEditorWindow : ILevelEditorWindow
         GUILayout.BeginVertical("Settings", GUI.skin.window, GUILayout.ExpandWidth(false), GUILayout.Width(panelWidth));
         CombatAreaCreator.CurrentCombatAreaCreator.lineSegmentLength = EditorGUILayout.FloatField("Line Segment Length", CombatAreaCreator.CurrentCombatAreaCreator.lineSegmentLength);
         CombatAreaCreator.CurrentCombatAreaCreator.useDirectionVectorForNormal = GUILayout.Toggle(CombatAreaCreator.CurrentCombatAreaCreator.useDirectionVectorForNormal, "Use Direction Vector for Normal");
+
+        EditorGUI.BeginChangeCheck();
+        CombatAreaCreator.CurrentCombatAreaCreator.showCombatAreaDetails = GUILayout.Toggle(CombatAreaCreator.CurrentCombatAreaCreator.showCombatAreaDetails, "Show Combat Area Details");
+        if (EditorGUI.EndChangeCheck())
+            CombatAreaCreator.CurrentCombatAreaCreator.SetDetailsVisiblity(CombatAreaCreator.CurrentCombatAreaCreator.showCombatAreaDetails);
+        
+        CombatAreaCreator.CurrentCombatAreaCreator.combatAreaHeightOffset = EditorGUILayout.FloatField("Combat Area Height", CombatAreaCreator.CurrentCombatAreaCreator.combatAreaHeightOffset);
+        
         _showDebugOptions = GUILayout.Toggle(_showDebugOptions, "Show Debug Options");
         if (_showDebugOptions)
         {
@@ -147,33 +163,44 @@ public class CombatAreaEditorWindow : ILevelEditorWindow
         CombatAreaCreator.vertexIconTexture = _vertexIconTexture;
         OnWindowOpened();
 
-        Selection.selectionChanged -= OnSelectionChanged;
-        Selection.selectionChanged += OnSelectionChanged;
+        //Selection.selectionChanged -= OnSelectionChanged;
+        //Selection.selectionChanged += OnSelectionChanged;
     }
 
     public void OnWindowOpened()
     {
-        //if (!CombatAreaCreator.CurrentCombatAreaCreator)
-        //    CreateCombatAreaEditor();
-
         SetCombatAreaCreatorVisibility(true);
 
+        if (CombatAreaCreator.CurrentCombatAreaCreator)
+            CombatAreaCreator.CurrentCombatAreaCreator.SetDetailsVisiblity(CombatAreaCreator.CurrentCombatAreaCreator.showCombatAreaDetails);
         LevelEditorMessageSystem.Push("Opened Combat Area Editor", 1f, LevelEditorMessageSystem.MessageType.Info);
     }
 
     public void OnWindowClosed()
     {
         SetCombatAreaCreatorVisibility(false);
-        Selection.selectionChanged -= OnSelectionChanged;
+        //Selection.selectionChanged -= OnSelectionChanged;
+
+        if (CombatAreaCreator.CurrentCombatAreaCreator)
+            CombatAreaCreator.CurrentCombatAreaCreator.SetDetailsVisiblity(CombatAreaCreator.CurrentCombatAreaCreator.showCombatAreaDetails);
     }
 
-    private void OnSelectionChanged() {
-        GameObject selectedObject = Selection.activeGameObject;
-        if (!selectedObject) return;
+    private GameObject _lastSelection = null;
 
-        CombatAreaCreator combatAreaCreator = selectedObject.GetComponentInChildren<CombatAreaCreator>();
-        if (combatAreaCreator)
-            CombatAreaCreator.CurrentCombatAreaCreator = combatAreaCreator;
+    private void CheckForSelectionChange() { 
+    GameObject selectedObject = Selection.activeGameObject;
+        if (!selectedObject) {
+            CombatAreaCreator.CurrentCombatAreaCreator = null;
+            return;
+        }
+
+        if (selectedObject != _lastSelection)
+        {
+            _lastSelection = selectedObject;
+            CombatAreaCreator combatAreaCreator = selectedObject.GetComponentInChildren<CombatAreaCreator>();
+            if (combatAreaCreator)
+                CombatAreaCreator.CurrentCombatAreaCreator = combatAreaCreator;
+        }
     }
 
     private void CreateCombatAreaEditor()

@@ -32,6 +32,8 @@ public class CombatAreaCreator : MonoBehaviour
     [HideInInspector] public bool useDirectionVectorForNormal = true;
     [HideInInspector] public bool showRendererBounds = true;
     [HideInInspector] public bool showMidpointAtLineSegmentDuringEditMode = false;
+    [HideInInspector] public bool showCombatAreaDetails = false;
+    [HideInInspector] public float combatAreaHeightOffset = 2f;
     [HideInInspector] public float lineSegmentLength = 1f;
 
     [Header("References")]
@@ -155,6 +157,12 @@ public class CombatAreaCreator : MonoBehaviour
         _combatAreaLineRenderer.positionCount = _vertices.Count;
     }
 
+    public void SetDetailsVisiblity(bool visiblity)
+    {
+        if (_detailCanvas)
+            _detailCanvas.gameObject.SetActive(visiblity);
+    }
+
     private void OnDrawGizmos()
     {
         if (Application.isPlaying) return;
@@ -179,7 +187,7 @@ public class CombatAreaCreator : MonoBehaviour
 #if UNITY_EDITOR
     private void OnSceneGUI(UnityEditor.SceneView sceneView) {
         if (sceneView.camera && _detailCanvas) {
-            _detailCanvas.transform.position = _combatAreaLineRenderer.bounds.center + Vector3.up * 4f;
+            _detailCanvas.transform.position = _combatAreaLineRenderer.bounds.center + Vector3.up * combatAreaHeightOffset;
             _detailCanvas.transform.LookAt(sceneView.camera.transform);
             _detailCanvas.transform.Rotate(0f, 180f, 0f);
         }
