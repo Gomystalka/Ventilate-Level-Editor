@@ -112,12 +112,15 @@ public class CombatAreaEditorWindow : ILevelEditorWindow
         }
             //GUILayout
         GUILayout.EndVertical();
-        GUILayout.BeginVertical("Vertex Manipulation", GUI.skin.window, GUILayout.ExpandWidth(false), GUILayout.Width(panelWidth));
+        GUILayout.BeginVertical("Area Manipulation", GUI.skin.window, GUILayout.ExpandWidth(false), GUILayout.Width(panelWidth));
 
         if (CombatAreaCreator.CurrentCombatAreaCreator.EditMode == CombatAreaEditMode.None)
         {
-            if (GUILayout.Button("Add Vertex"))
+            if (GUILayout.Button("Add Vertex Mode"))
                 CombatAreaCreator.CurrentCombatAreaCreator.EditMode = CombatAreaEditMode.VertexAdd;
+
+            if (GUILayout.Button("Add Area Trigger"))
+                CombatAreaCreator.CurrentCombatAreaCreator.EditMode = CombatAreaEditMode.AreaTriggerAdd;
 
             EditorGUI.BeginDisabledGroup(CombatAreaCreator.CurrentCombatAreaCreator.VertexCount <= 2);
             if (!CombatAreaCreator.CurrentCombatAreaCreator.IsLoopConnected)
@@ -144,6 +147,8 @@ public class CombatAreaEditorWindow : ILevelEditorWindow
             return "Finalised";
         else if (CombatAreaCreator.CurrentCombatAreaCreator.EditMode == CombatAreaEditMode.VertexAdd)
             return "Adding Vertices";
+        else if (CombatAreaCreator.CurrentCombatAreaCreator.EditMode == CombatAreaEditMode.AreaTriggerAdd)
+            return "Adding Area Triggers";
         else
             return "Building Area";
     }
@@ -182,7 +187,10 @@ public class CombatAreaEditorWindow : ILevelEditorWindow
         //Selection.selectionChanged -= OnSelectionChanged;
 
         if (CombatAreaCreator.CurrentCombatAreaCreator)
+        {
+            CombatAreaCreator.CurrentCombatAreaCreator.EditMode = CombatAreaEditMode.None;
             CombatAreaCreator.CurrentCombatAreaCreator.SetDetailsVisiblity(CombatAreaCreator.CurrentCombatAreaCreator.showCombatAreaDetails);
+        }
     }
 
     private GameObject _lastSelection = null;

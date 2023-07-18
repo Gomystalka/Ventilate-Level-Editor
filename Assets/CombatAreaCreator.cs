@@ -88,8 +88,9 @@ public class CombatAreaCreator : MonoBehaviour
 
     public GameObject CreateNewPosition(Vector3 position) {
         GameObject vertex = new GameObject($"Area:Vertex:{_vertices.Count}");
+        //vertex.hideFlags = HideFlags.HideInHierarchy;
         vertex.transform.position = position;
-        vertex.transform.SetParent(transform);
+        vertex.transform.SetParent(_vertexParent);
 
         if (_vertices.Count == 0)
             SourceTransform = vertex.transform;
@@ -102,8 +103,9 @@ public class CombatAreaCreator : MonoBehaviour
 
     public GameObject InsertVertex(int insertIndex, Vector3 position) {
         GameObject vertex = new GameObject($"Area:Vertex:{insertIndex}");
+        //vertex.hideFlags = HideFlags.HideInHierarchy;
         vertex.transform.position = position;
-        vertex.transform.SetParent(transform);
+        vertex.transform.SetParent(_vertexParent);
 
         _vertices.Insert(insertIndex, vertex.transform);
         _combatAreaLineRenderer.positionCount = _vertices.Count;
@@ -333,10 +335,11 @@ public class CombatAreaCreator : MonoBehaviour
     }
 
     private void CreateAreaTriggerAtPosition(Vector3 position) {
-        GameObject areaTrigger = new GameObject("Temp Area Trigger");
+        GameObject areaTrigger = new GameObject("Area Trigger");
         areaTrigger.transform.SetParent(_triggerParent);
+        areaTrigger.transform.position = position;
 
-        //areaTrigger.AddComponent<AreaTriggerBuilder>();
+        areaTrigger.AddComponent<AreaTriggerBuilder>();
     }
 
     private bool CheckForEditModeClick(bool useEvent = true)
