@@ -40,6 +40,12 @@ public class CombatAreaCreator : MonoBehaviour
     [SerializeField] private Canvas _detailCanvas;
     [SerializeField] private TMPro.TextMeshProUGUI _title;
 
+    [Header("Parent Transforms")]
+    [SerializeField] private Transform _vertexParent;
+    [SerializeField] private Transform _wallParent;
+    [SerializeField] private Transform _spawnerParent;
+    [SerializeField] private Transform _triggerParent;
+
     public int VertexCount => _vertices.Count;
 
     public bool IsLoopConnected => //A loop is connected if both the first and last vertices are the same.
@@ -236,6 +242,12 @@ public class CombatAreaCreator : MonoBehaviour
                     case CombatAreaEditMode.VertexAdd:
                         OnVertexAddMode(ref hit);
                         break;
+                    case CombatAreaEditMode.AreaTriggerAdd:
+                        OnAreaTriggerAddMode(ref hit);
+                        break;
+                    case CombatAreaEditMode.SpawnerAdd:
+                        OnSpawnerAddMode(ref hit);
+                        break;
                     default:
                         break;
                 }
@@ -294,16 +306,45 @@ public class CombatAreaCreator : MonoBehaviour
 
             mainPosition.y = transform.position.y + yDifference;
 
-            if (Event.current.type == EventType.MouseDown && Event.current.button == 0)
+            if (CheckForEditModeClick())
             {
                 GameObject insertedVertex = InsertVertex(closestMidPointIndex + 1, mainPosition);
                 if (vertexIconTexture)
                     UnityEditor.EditorGUIUtility.SetIconForObject(insertedVertex, vertexIconTexture as Texture2D);
-                Event.current.Use();
             }
         }
 
         closestDistance = float.MaxValue;
+    }
+
+
+    private void OnAreaTriggerAddMode(ref RaycastHit hit)
+    {
+
+        if (CheckForEditModeClick())
+            CreateAreaTriggerAtPosition(hit.point);
+    }
+
+    private void OnSpawnerAddMode(ref RaycastHit hit)
+    {
+        if (CheckForEditModeClick())
+        {
+        }
+    }
+
+    private void CreateAreaTriggerAtPosition(Vector3 position) {
+        GameObject areaTrigger = new GameObject("Temp Area Trigger");
+        areaTrigger.transform.SetParent(_triggerParent);
+
+        //areaTrigger.AddComponent<AreaTriggerBuilder>();
+    }
+
+    private bool CheckForEditModeClick(bool useEvent = true)
+    {
+        bool result = Event.current.type == EventType.MouseDown && Event.current.button == 0;
+        if (result && useEvent)
+            Event.current.Use();
+        return result;
     }
 
     //private void TryInterceptDeleteAction() {
@@ -319,5 +360,7 @@ public class CombatAreaCreator : MonoBehaviour
 
 public enum CombatAreaEditMode { 
     None,
-    VertexAdd
+    VertexAdd,
+    AreaTriggerAdd,
+    SpawnerAdd
 }
