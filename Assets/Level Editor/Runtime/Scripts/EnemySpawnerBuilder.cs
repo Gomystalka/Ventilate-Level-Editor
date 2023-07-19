@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Tom.LevelEditor.CombatAreaEditor
+namespace Tom.LevelEditor.Runtime.CombatAreaEditor
 {
     public class EnemySpawnerBuilder : MonoBehaviour
     {

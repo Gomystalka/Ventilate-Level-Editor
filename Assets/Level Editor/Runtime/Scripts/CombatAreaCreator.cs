@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Tom.LevelEditor.CombatAreaEditor
+namespace Tom.LevelEditor.Runtime.CombatAreaEditor
 {
     [ExecuteInEditMode]
     [RequireComponent(typeof(LineRenderer), typeof(BoxCollider))]
@@ -230,7 +230,7 @@ namespace Tom.LevelEditor.CombatAreaEditor
                 {
                     GameObject vertex = CreateNewPosition(frontVertexPosition + (normal * lineSegmentLength));
                     if (vertexIconTexture)
-                        UnityEditor.EditorGUIUtility.SetIconForObject(vertex, vertexIconTexture as Texture2D);
+                        Utility.LevelEditorRuntimeUtility.SetIconForObject(vertex, vertexIconTexture as Texture2D);
                 }
             }
 
@@ -332,7 +332,7 @@ namespace Tom.LevelEditor.CombatAreaEditor
                 {
                     GameObject insertedVertex = InsertVertex(closestMidPointIndex + 1, mainPosition);
                     if (vertexIconTexture)
-                        UnityEditor.EditorGUIUtility.SetIconForObject(insertedVertex, vertexIconTexture as Texture2D);
+                        Utility.LevelEditorRuntimeUtility.SetIconForObject(insertedVertex, vertexIconTexture as Texture2D);
                 }
             }
 

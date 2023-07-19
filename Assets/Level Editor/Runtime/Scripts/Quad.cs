@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Tom.LevelEditor.PathMeshEditor
+namespace Tom.LevelEditor.Runtime.PathMeshEditor
 {
     public class Quad
     {

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Tom.LevelEditor.PathMeshEditor
+namespace Tom.LevelEditor.Runtime.PathMeshEditor
 {
     public class Vertex : MonoBehaviour
     {
@@ -17,6 +17,7 @@ namespace Tom.LevelEditor.PathMeshEditor
         public int UniqueVertexIndex { get; set; } = 0;
 
         public Vector3 Position => transform.position;
+        public Vector3 LocalPosition => transform.localPosition;
 
         public bool ShowVertexIndices { get; set; } = false;
 

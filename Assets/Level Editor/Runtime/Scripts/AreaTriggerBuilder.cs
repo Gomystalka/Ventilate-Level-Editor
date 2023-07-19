@@ -1,3 +1,5 @@
+#define AMOGUS
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,7 +7,7 @@ using UnityEngine;
 using UnityEditor;
 #endif
 
-namespace Tom.LevelEditor.CombatAreaEditor
+namespace Tom.LevelEditor.Runtime.CombatAreaEditor
 {
     public class AreaTriggerBuilder : MonoBehaviour
     {
@@ -14,7 +16,6 @@ namespace Tom.LevelEditor.CombatAreaEditor
             if (Application.isPlaying)
                 Destroy(this);
         }
-
         private void OnDrawGizmos()
         {
             Color c = Color.yellow;
@@ -39,13 +40,13 @@ namespace Tom.LevelEditor.CombatAreaEditor
 #if UNITY_EDITOR
 namespace Tom.LevelEditor.Editor
 {
-    [CustomEditor(typeof(CombatAreaEditor.AreaTriggerBuilder))]
+    [CustomEditor(typeof(Runtime.CombatAreaEditor.AreaTriggerBuilder))]
     public class AreaTriggerBuilderInspector : UnityEditor.Editor
     {
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
-            CombatAreaEditor.AreaTriggerBuilder atb = (CombatAreaEditor.AreaTriggerBuilder)target;
+            Runtime.CombatAreaEditor.AreaTriggerBuilder atb = (Runtime.CombatAreaEditor.AreaTriggerBuilder)target;
 
             if (GUILayout.Button("Create Collider"))
                 atb.CreateCollider();

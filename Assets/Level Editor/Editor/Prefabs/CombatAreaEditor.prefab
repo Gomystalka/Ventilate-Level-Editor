@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4620931169408641760}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Temporary Trigger Parent
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -75,7 +75,7 @@ GameObject:
   - component: {fileID: 2311151247191104031}
   - component: {fileID: 7872427641408963190}
   - component: {fileID: 7520815910153139983}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: WaveInfo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -98,10 +98,10 @@ RectTransform:
   m_Father: {fileID: 4415206331204099868}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 3.0000002, y: -1.5974}
+  m_SizeDelta: {x: 6.0000005, y: 3.1948}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7872427641408963190
 CanvasRenderer:
@@ -153,7 +153,7 @@ GameObject:
   - component: {fileID: 6970632255050857944}
   - component: {fileID: 2791217802115695729}
   - component: {fileID: 8371003313839764745}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -256,7 +256,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2183946069623196562}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Vertex Parent
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -290,7 +290,7 @@ GameObject:
   - component: {fileID: 2760393416122346400}
   - component: {fileID: 82145613097882367}
   - component: {fileID: 2992784176407391840}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Bar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -387,7 +387,7 @@ GameObject:
   - component: {fileID: 5581520984005208299}
   - component: {fileID: 6117573872932833721}
   - component: {fileID: 1051023177602768523}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: ContentPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -410,10 +410,10 @@ RectTransform:
   m_Father: {fileID: 5741773623079140591}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 3.1948}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 3, y: -2.3961}
+  m_SizeDelta: {x: 6, y: 3.1948}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5581520984005208299
 CanvasRenderer:
@@ -490,7 +490,7 @@ GameObject:
   - component: {fileID: 2721706914707265916}
   - component: {fileID: 8239549201675598651}
   - component: {fileID: 423686955305535219}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Title
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -798,7 +798,7 @@ GameObject:
   - component: {fileID: 6610233500098482971}
   - component: {fileID: 2520718865648250181}
   - component: {fileID: 5526454591964689069}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Title
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -820,10 +820,10 @@ RectTransform:
   m_Father: {fileID: 5741773623079140591}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0.7922}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 3, y: -0.3961}
+  m_SizeDelta: {x: 6, y: 0.7922}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2520718865648250181
 CanvasRenderer:
@@ -931,7 +931,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 259120354420062707}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Spawner Parent
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -965,13 +965,13 @@ GameObject:
   - component: {fileID: 1585380639356219264}
   - component: {fileID: 2454850016651609567}
   - component: {fileID: 7371977859570893416}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &8181952851144055257
 RectTransform:
   m_ObjectHideFlags: 0
@@ -979,7 +979,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6515643239244123583}
-  m_LocalRotation: {x: -0.36687124, y: -0.49226394, z: 0.24017917, w: -0.75192803}
+  m_LocalRotation: {x: 0.063398525, y: 0.026701273, z: 0.0016968485, w: -0.99762964}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1063,7 +1063,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8253186234974882309}
-  m_Layer: 5
+  m_Layer: 0
   m_Name: Wall Parent
   m_TagString: Untagged
   m_Icon: {fileID: 0}

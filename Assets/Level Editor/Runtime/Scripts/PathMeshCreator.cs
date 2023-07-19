@@ -3,9 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-using Tom.LevelEditor.Utility;
+using Tom.LevelEditor.Runtime.Utility;
 
-namespace Tom.LevelEditor.PathMeshEditor
+namespace Tom.LevelEditor.Runtime.PathMeshEditor
 {
     [ExecuteInEditMode]
     public class PathMeshCreator : MonoBehaviour

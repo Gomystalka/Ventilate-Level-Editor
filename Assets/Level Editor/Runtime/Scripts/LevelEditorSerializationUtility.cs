@@ -3,9 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-using Tom.LevelEditor.PathMeshEditor;
+using Tom.LevelEditor.Runtime.PathMeshEditor;
 
-namespace Tom.LevelEditor.Utility
+namespace Tom.LevelEditor.Runtime.Utility
 {
     public static class LevelEditorSerializationUtility
     {

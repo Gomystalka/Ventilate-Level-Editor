@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Tom.LevelEditor.PathMeshEditor
+namespace Tom.LevelEditor.Runtime.PathMeshEditor
 {
     public class GeneratedPathMesh : MonoBehaviour
     {
