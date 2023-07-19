@@ -122,6 +122,9 @@ public class CombatAreaEditorWindow : ILevelEditorWindow
             if (GUILayout.Button("Add Area Trigger"))
                 CombatAreaCreator.CurrentCombatAreaCreator.EditMode = CombatAreaEditMode.AreaTriggerAdd;
 
+            if (GUILayout.Button("Add Enemy Spawner"))
+                CombatAreaCreator.CurrentCombatAreaCreator.EditMode = CombatAreaEditMode.SpawnerAdd;
+
             EditorGUI.BeginDisabledGroup(CombatAreaCreator.CurrentCombatAreaCreator.VertexCount <= 2);
             if (!CombatAreaCreator.CurrentCombatAreaCreator.IsLoopConnected)
             {
@@ -149,6 +152,8 @@ public class CombatAreaEditorWindow : ILevelEditorWindow
             return "Adding Vertices";
         else if (CombatAreaCreator.CurrentCombatAreaCreator.EditMode == CombatAreaEditMode.AreaTriggerAdd)
             return "Adding Area Triggers";
+        else if (CombatAreaCreator.CurrentCombatAreaCreator.EditMode == CombatAreaEditMode.SpawnerAdd)
+            return "Adding Enemy Spawners";
         else
             return "Building Area";
     }

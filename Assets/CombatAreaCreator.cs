@@ -255,6 +255,9 @@ public class CombatAreaCreator : MonoBehaviour
                 }
             }
         }
+
+        if (EditMode != CombatAreaEditMode.None && CheckForEditModeClick(1, true)) //Make all edit modes cancellable.
+            EditMode = CombatAreaEditMode.None;
     }
 
     private void OnVertexAddMode(ref RaycastHit hit) {
@@ -322,16 +325,22 @@ public class CombatAreaCreator : MonoBehaviour
 
     private void OnAreaTriggerAddMode(ref RaycastHit hit)
     {
+#if UNITY_EDITOR
+        UnityEditor.Handles.color = Color.yellow;
+        UnityEditor.Handles.DrawWireCube(hit.point, Vector3.one);
 
         if (CheckForEditModeClick())
             CreateAreaTriggerAtPosition(hit.point);
+#endif
     }
 
     private void OnSpawnerAddMode(ref RaycastHit hit)
     {
+        UnityEditor.Handles.color = Color.red;
+        UnityEditor.Handles.DrawWireCube(hit.point, Vector3.one);
+
         if (CheckForEditModeClick())
-        {
-        }
+            CreateSpawnerAtPosition(hit.point);
     }
 
     private void CreateAreaTriggerAtPosition(Vector3 position) {
@@ -342,13 +351,24 @@ public class CombatAreaCreator : MonoBehaviour
         areaTrigger.AddComponent<AreaTriggerBuilder>();
     }
 
-    private bool CheckForEditModeClick(bool useEvent = true)
+    private void CreateSpawnerAtPosition(Vector3 position) {
+        GameObject enemySpawner = new GameObject("Enemy Spawner");
+        enemySpawner.transform.SetParent(_spawnerParent);
+        enemySpawner.transform.position = position;
+
+        enemySpawner.AddComponent<EnemySpawnerBuilder>();
+    }
+
+    private bool CheckForEditModeClick(int button = 0, bool useEvent = true)
     {
-        bool result = Event.current.type == EventType.MouseDown && Event.current.button == 0;
+        bool result = Event.current.type == EventType.MouseDown && Event.current.button == button;
         if (result && useEvent)
             Event.current.Use();
         return result;
     }
+
+    private bool CheckForEditModeMouseMove()
+        => Event.current.type == EventType.MouseMove;
 
     //private void TryInterceptDeleteAction() {
     //    if (UnityEditor.Selection.count == 0) return;
