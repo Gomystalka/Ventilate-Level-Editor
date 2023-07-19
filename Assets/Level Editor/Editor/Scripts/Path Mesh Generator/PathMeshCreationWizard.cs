@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
+using Tom.LevelEditor.PathMeshEditor;
+using Tom.LevelEditor.Utility;
+
 public class PathMeshCreationWizard : ScriptableWizard
 {
     [Header("Settings")]

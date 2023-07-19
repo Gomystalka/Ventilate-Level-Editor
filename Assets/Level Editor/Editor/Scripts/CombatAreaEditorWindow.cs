@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
+using Tom.LevelEditor.CombatAreaEditor;
+using Tom.LevelEditor.Utility;
+
 public class CombatAreaEditorWindow : ILevelEditorWindow
 {
     private const string kCombatZoneEditorGameObjectName = "CombatAreaEditor";

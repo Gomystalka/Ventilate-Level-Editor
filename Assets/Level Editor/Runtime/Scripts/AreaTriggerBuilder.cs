@@ -5,43 +5,51 @@ using UnityEngine;
 using UnityEditor;
 #endif
 
-public class AreaTriggerBuilder : MonoBehaviour
+namespace Tom.LevelEditor.CombatAreaEditor
 {
-    private void Awake()
+    public class AreaTriggerBuilder : MonoBehaviour
     {
-        if (Application.isPlaying)
-            Destroy(this);
-    }
+        private void Awake()
+        {
+            if (Application.isPlaying)
+                Destroy(this);
+        }
 
-    private void OnDrawGizmos()
-    {
-        Color c = Color.yellow;
-        Gizmos.color = c;
-        Matrix4x4 matrix = Gizmos.matrix;
-        Gizmos.matrix = Matrix4x4.TRS(transform.position, transform.rotation, transform.localScale);
-        Gizmos.DrawWireCube(Vector3.zero, Vector3.one);
-        c.a = 0.2f;
-        Gizmos.color = c;
-        Gizmos.DrawCube(Vector3.zero, Vector3.one);
+        private void OnDrawGizmos()
+        {
+            Color c = Color.yellow;
+            Gizmos.color = c;
+            Matrix4x4 matrix = Gizmos.matrix;
+            Gizmos.matrix = Matrix4x4.TRS(transform.position, transform.rotation, transform.localScale);
+            Gizmos.DrawWireCube(Vector3.zero, Vector3.one);
+            c.a = 0.2f;
+            Gizmos.color = c;
+            Gizmos.DrawCube(Vector3.zero, Vector3.one);
 
-        Gizmos.matrix = matrix;
-    }
+            Gizmos.matrix = matrix;
+        }
 
-    public void CreateCollider() {
-        gameObject.AddComponent<BoxCollider>();
+        public void CreateCollider()
+        {
+            gameObject.AddComponent<BoxCollider>();
+        }
     }
 }
 
 #if UNITY_EDITOR
-[CustomEditor(typeof(AreaTriggerBuilder))]
-public class AreaTriggerBuilderInspector : Editor {
-    public override void OnInspectorGUI()
+namespace Tom.LevelEditor.Editor
+{
+    [CustomEditor(typeof(CombatAreaEditor.AreaTriggerBuilder))]
+    public class AreaTriggerBuilderInspector : UnityEditor.Editor
     {
-        base.OnInspectorGUI();
-        AreaTriggerBuilder atb = (AreaTriggerBuilder)target;
+        public override void OnInspectorGUI()
+        {
+            base.OnInspectorGUI();
+            CombatAreaEditor.AreaTriggerBuilder atb = (CombatAreaEditor.AreaTriggerBuilder)target;
 
-        if (GUILayout.Button("Create Collider"))
-            atb.CreateCollider();
+            if (GUILayout.Button("Create Collider"))
+                atb.CreateCollider();
+        }
     }
 }
 #endif
