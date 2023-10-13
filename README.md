@@ -35,6 +35,12 @@
 <p>This window also offers saving, autosaving and loading of meshes.</p>
 <strong><p>VERTICES SHOULD NOT BE DELETED MANUALLY! PLEASE USE THE VERTEX MANIPULATION WINDOW INSTEAD!</p></strong>
 
+<h2>Known Bugs</h2>
+<ul>
+ <li>Triangles sometimes result in the mesh breaking. This will be fixed in a later update.</li>
+ <li>When generating the mesh, the mesh is not scaled properly. This will be fixed in the next update.</li>
+</ul>
+
 <h1>Combat Area Creator</h1>
 <p>This window can be used to simplify the creation of combat zones across levels.</p>
 <h2>Usage</h2>
