@@ -13,7 +13,7 @@
 <p>This window can be used to simplify the placement of props when building levels.</p>
 <h2>Usage</h2>
 <ol>
- <li>Create a new <b>Asset Data</b> object via the Unity Create menu.</li>
+ <li>Create a new <b>Asset Data</b> object via the Unity Create menu. Once created, the <b>Asset Data</b> object must be bound to your project by selecting the object and clicking 'Set Current Project as Owner'!</li>
  <li>Open the <b>Asset Importer</b> window.</li>
  <li>Drag in any assets into the <b>Asset Importer</b> window and assign categories accordingly.</li>
  <li>Import the assets by clicking <b>'Import'</b></li>
