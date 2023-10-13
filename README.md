@@ -19,7 +19,7 @@
  <li>Import the assets by clicking <b>'Import'</b></li>
  <li>Reopen the Asset Placement window, drag in the <b>Asset Data</b> you just created and begin the placement of props.</li>
 </ol>
-![image](https://github.com/Gomystalka/Ventilate-Level-Editor/assets/48233064/a415c16d-b412-416e-905d-45480586cfff)
+<img src='https://github.com/Gomystalka/Ventilate-Level-Editor/assets/48233064/a415c16d-b412-416e-905d-45480586cfff'/>
 
 <h1>Quad Mesh Creator</h1>
 <p>This window can be used to simplify the creation process of the path meshes used for the calculation of collisions and navigation meshes.</p>
