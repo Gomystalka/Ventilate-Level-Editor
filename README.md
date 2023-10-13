@@ -19,7 +19,8 @@
  <li>Import the assets by clicking <b>'Import'</b></li>
  <li>Reopen the Asset Placement window, drag in the <b>Asset Data</b> you just created and begin the placement of props.</li>
 </ol>
-<img src='https://github.com/Gomystalka/Ventilate-Level-Editor/assets/48233064/a415c16d-b412-416e-905d-45480586cfff'/>
+<h3>DEMO</h3>
+<a href="https://youtu.be/Wjwi2quDMVo"><img src="http://img.youtube.com/vi/Wjwi2quDMVo/0.jpg" title="Asset Data Window Demo"/></a>
 
 <h1>Quad Mesh Creator</h1>
 <p>This window can be used to simplify the creation process of the path meshes used for the calculation of collisions and navigation meshes.</p>
@@ -34,6 +35,9 @@
 <p>Quads can also be deleted by selecting the quad's source vertex and click on 'Delete Quad'. Be careful however, as this feature is unstable.</p>
 <p>This window also offers saving, autosaving and loading of meshes.</p>
 <strong><p>VERTICES SHOULD NOT BE DELETED MANUALLY! PLEASE USE THE VERTEX MANIPULATION WINDOW INSTEAD!</p></strong>
+
+<h3>DEMO</h3>
+<a href="https://youtu.be/bWHsmuriR-U"><img src="http://img.youtube.com/vi/bWHsmuriR-U/0.jpg" title="Quad Mesh Creator Window Demo"/></a>
 
 <h2>Known Bugs</h2>
 <ul>
@@ -51,3 +55,6 @@
  <li>After finalisation, you can add enemies and triggers accordingly.</li>
 </ol>
 <p>Unlike the Quad Mesh Creator, the vertices can be freely deleted without any issues.</p>
+
+<h3>DEMO</h3>
+<a href="https://youtu.be/rorVrITR96U"><img src="http://img.youtube.com/vi/rorVrITR96U/0.jpg" title="Combat Area Creator Window Demo"/></a>
